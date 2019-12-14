@@ -1,0 +1,171 @@
+[app/ui]
+version = 7.3.1
+modtime = 1572970518.333417000
+
+[app/launcher]
+version = 7.3.1
+modtime = 1572970518.336989000
+
+[html/search_dictionary_html]
+owner = admin
+version = 7.3.1
+modtime = 1573004751.522680000
+
+[nav/default]
+owner = admin
+version = 7.3.1
+modtime = 1573924704.343840000
+
+[savedsearches/Local%20Accounts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575808751.200173000
+
+[savedsearches/Near%20Critical%20Disk%20Usage]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922833.185976000
+
+[savedsearches/Orphaned%20Scheduled%20Searches]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.747866000
+
+[savedsearches/Saturated%20Event-Processing%20Queues]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922851.571840000
+
+[savedsearches/Scheduled%20Search%20Distribution]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922861.480201000
+
+[savedsearches/Search%20Range%20and%20Frequency%20Mismatch]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922872.465680000
+
+[savedsearches/Searches%20with%20Long%20Run%20Times]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922884.757832000
+
+[savedsearches/Server%20Ulimit%20Assessment]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922894.434577000
+
+[savedsearches/Skipped%20Searches]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922904.380158000
+
+[savedsearches/Total%20License%20Usage%20Near%20Daily%20Quota]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922914.027488000
+
+[savedsearches/Admin%20Login%20Attempts]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.435486000
+
+[savedsearches/Critical%20System%20Physical%20Memory%20Usage]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.313012000
+
+[savedsearches/Daily%20License%20Usage]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.522508000
+
+[savedsearches/Data%20Quality%20Issues]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.459358000
+
+[savedsearches/Expired%20or%20Soon%20to%20Expire%20License]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.350916000
+
+[savedsearches/Forwarder%20Version]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573922966.483986000
+
+[savedsearches/Forwarders%20Phoning%20Home%20Too%20Frequently]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.707916000
+
+[savedsearches/Indexing%20Latency]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.653399000
+
+[savedsearches/Linux%20Kernel%20Transparent%20Huge%20Pages%20%28THP%29]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575829283.593838000
+
+[savedsearches/List%20Correlation%20Searches]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573923004.011613000
+
+[savedsearches/Unsecured%20Communication]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1573923014.297848000
+
+[savedsearches/Users%20with%20Delete%20Capabilities]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 7.3.1
+modtime = 1575799274.453365000
