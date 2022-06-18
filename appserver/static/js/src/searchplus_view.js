@@ -1,22 +1,20 @@
-const { parseJSON } = require('jquery');
-
-define(function (require, exports, module) {
-
-	var SimpleSplunkView = require('splunkjs/mvc/simplesplunkview');
-	var _ = require("underscore");
-	var $ = require("jquery");
-	var format = require("/static/app/searchplus/js/format.js");
-	require("/static/app/searchplus/js/searchplus_icons.js")
+define([
+	'underscore', 
+	'jquery', 
+	'splunkjs/mvc/simplesplunkview', 
+	'/static/app/searchplus/js/format.min.js', 
+	'/static/app/searchplus/js/searchplus_icons.min.js'], 
+	function (_, $, SimpleSplunkView, format) {
 
 	// Define the custom view class
 	var SearchPlusView = SimpleSplunkView.extend({
 
-		className: "spview",
+		className: 'spview',
 
 		// Define our initial values, set the type of results to return
 		options: {
-			data: "preview",  // Results type
-			outputMode: "json"
+			data: 'preview',  // Results type
+			outputMode: 'json'
 		},
 
 		// Override this method to configure the view
@@ -175,15 +173,22 @@ define(function (require, exports, module) {
 			});
 		},
 
-		_makeAttrMarkup: function (list) {
+		_makeAttrMarkup: function (list, url_prefix=null) {
 			if (!list) return '';
 			if (!Array.isArray(list)) list = [list];
 			let markup = '';
-			list.forEach(e => {
-				if (e == 'N/A' || e == '') return;
-				markup += `<span class="sp-tag" title="${e}">${e}</span>`
-			})
 
+			if (url_prefix == null) {
+				list.forEach(e => {
+					if (e == 'N/A' || e == '') return;
+					markup += `<span class="sp-tag" title="${e}">${e}</span>`
+				})	
+			} else {
+				list.forEach(e => {
+					if (e == 'N/A' || e == '') return;
+					markup += `<span class="sp-tag" title="${e}">${e}</span>`
+				})	
+			}
 			return markup;
 		}
 	});

@@ -1,0 +1,26 @@
+{
+  "name": "searchplus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "searchplus.js",
+  "scripts": {
+    "build": "babel appserver/static/js/src -d appserver/static/js; cd appserver/static/js; rm *.min.js > /dev/null; for f in *.js; do short=${f%.js}; terser $short.js --compress --mangle --output $short.min.js; rm $short.js; done;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alatif113/searchplus.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alatif113/searchplus/issues"
+  },
+  "homepage": "https://github.com/alatif113/searchplus#readme",
+  "dependencies": {},
+	"devDependencies": {
+		"@babel/cli": "^7.15.4",
+		"@babel/core": "^7.15.5",
+		"@babel/preset-env": "^7.15.6",
+		"terser": "^5.8.0"
+	}
+}

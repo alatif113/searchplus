@@ -7,8 +7,8 @@ require([
 	'splunkjs/mvc/simpleform/input/multiselect',
 	'splunkjs/mvc/timerangeview',
 	"splunkjs/mvc/dropdownview",
-	'/static/app/searchplus/js/searchplus_view.js',
-	"/static/app/searchplus/js/searchplus_icons.js"
+	'/static/app/searchplus/js/searchplus_view.min.js',
+	"/static/app/searchplus/js/searchplus_icons.min.js"
 ], function($, mvc, SearchManager, PostProcessManager, TextInput, MultiSelectInput, TimeRangeView, DropdownView, SearchPlusView) {
 
 	$dashboard = $('.dashboard-body').html(`

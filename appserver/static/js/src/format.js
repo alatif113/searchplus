@@ -1,4 +1,4 @@
-define(["/static/app/searchplus/js/prism.js"], function(Prism) {
+define(["/static/app/searchplus/js/prism.min.js"], function(Prism) {
 	return function(str, multiline, highlight) {
 		var hlight = (highlight) ? " highlight" : '';
 		var indentlevel = 0;
