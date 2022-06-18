@@ -1,8 +1,8 @@
-define(["/static/app/searchdict/js/prism.js"], function(Prism) {
+define(["/static/app/searchplus/js/prism.js"], function(Prism) {
 	return function(str, multiline, highlight) {
 		var hlight = (highlight) ? " highlight" : '';
 		var indentlevel = 0;
-		var linePrefix = '<span class="sd_row"><span class="sd_gutter"></span><div class="sd_code">';
+		var linePrefix = '<span class="sp-row"><span class="sp-gutter"></span><div class="sp-code">';
 		var lineSuffix = '</div></span>';
 		var result =  linePrefix + lineSuffix + linePrefix; 
 		var newLine = false;
@@ -50,7 +50,7 @@ define(["/static/app/searchdict/js/prism.js"], function(Prism) {
 			if (type == 'default') {
 				result += content;	
 			} else {
-				result += '<span class="sd_' + type + hlight + '">' + content + '</span>';
+				result += '<span class="sp-' + type + hlight + '">' + content + '</span>';
 			}
 		}
 		
