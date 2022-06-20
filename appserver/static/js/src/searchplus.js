@@ -27,7 +27,7 @@ require([
 						</div>
 						<div class="sp-input-container">
 							<div class="sp-input-label sp-flex-container">${icon_updated}<span>Last Updated</span></div>
-							<div class="sp-filter-timerange sp-input"></div>
+							<div class="sp-filter-updated sp-input"></div>
 						</div>
 						<div class="sp-input-container">
 							<div class="sp-input-label sp-flex-container">${icon_search}<span>Search</span></div>
@@ -133,7 +133,10 @@ require([
 		data: 'results',
 		preview: true,
 		cache: true,
+		earliest_time: 0,
+		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
+		| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
 		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 			[eval <<FIELD>>=split(<<FIELD>>, "|")]
 		| foreach command datamodel field index macro lookup function
@@ -148,8 +151,11 @@ require([
 		data: 'results',
 		preview: true,
 		cache: true,
+		earliest_time: 0,
+		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
+		| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
+		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique mtr_technique_id
 			[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
 		| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique value="N/A"
 		| search field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
@@ -163,7 +169,7 @@ require([
 		preview: true,
 		cache: true,
 		search: `| streamstats count
-		| search count > 0  count <= 100 `
+		| search count > 0  count <= 1000 `
 	}, { tokens: true });
 
 	var SearchPlusView = new SearchPlusView({
@@ -173,13 +179,24 @@ require([
 	}).render();
 
 	// ----------------------------------------------
-	// Time Range Filter
+	// Updated Filter
 	// ----------------------------------------------
-	var TimeRangeView = new TimeRangeView({
-		id: "sp_filter_timerange",
-        preset: "All Time",
-        el: $(".sp-filter-timerange")
-	}).render();
+	var UpdatedFilter = new DropdownView({
+		id: "sp_filter_updated",
+		choices: [
+			{label: "All Time", value: "-1000y"}, 
+			{label: "Last 1 Hour", value: "-1h"}, 
+			{label: "Last 12 Hours", value: "-12h"}, 
+			{label: "Last 1 Day", value: "-1d"},
+			{label: "Last 7 Days", value: "-7d"},
+			{label: "Last 1 Month", value: "-1mon"},
+			{label: "Last 6 Months", value: "-6mon"},
+			{label: "Last 1 Year", value: "-1y"},
+		],
+        default: "-1000y",
+		value: "$updated$",
+        el: $('.sp-filter-updated')
+    }, {tokens: true}).render();
 
 	// ----------------------------------------------
 	// Sort Filter
@@ -456,7 +473,7 @@ require([
 	new PostProcessManager({
 		id: "ppm_tactic",
 		managerid: "sm_base",
-		search: '| stats count by mtr_tactic | sort mtr_tactic'
+		search: '| stats count by mtr_tactic | sort mtr_tactic | eval mtr_tactic_quoted="\\"".mtr_tactic."\\""'
 	});
 
 	var TacticFilter = new MultiSelectInput({
@@ -465,7 +482,7 @@ require([
 		default: "*",
 		managerid: "ppm_tactic",
 		labelField: "mtr_tactic",
-		valueField: "mtr_tactic",
+		valueField: "mtr_tactic_quoted",
 		value: "$tactic$",
 		el: $('.sp-filter-mtr-tactic')
 	}, {tokens: true}).render();
@@ -478,7 +495,7 @@ require([
 	new PostProcessManager({
 		id: "ppm_technique",
 		managerid: "sm_base",
-		search: '| stats count by mtr_technique | sort mtr_technique'
+		search: '| stats count by mtr_technique | sort mtr_technique | eval mtr_technique_quoted="\\"".mtr_technique."\\""'
 	});
 
 	var TechniqueFilter = new MultiSelectInput({
@@ -487,7 +504,7 @@ require([
 		default: "*",
 		managerid: "ppm_technique",
 		labelField: "mtr_technique",
-		valueField: "mtr_technique",
+		valueField: "mtr_technique_quoted",
 		value: "$technique$",
 		el: $('.sp-filter-mtr-technique')
 	}, {tokens: true}).render();
@@ -498,6 +515,7 @@ require([
 	// Events
 	// ----------------------------------------------
 	SearchListManager.on('search:done', function(e) {
+		console.log(this);
 		console.log(this.query.attributes.search);
 		let results = this.data('results');
 		let count = results.attributes.manager.attributes.data.resultCount;
@@ -527,6 +545,7 @@ require([
 		$container.css('height', 'auto');
 		let height = $container.prop('scrollHeight');
 		$container.css('height', height + 'px');
+		console.log(height);
 	}
 
 	function multi_handle_all(multi) {

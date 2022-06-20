@@ -726,6 +726,8 @@ dd.sp-severity-na::before {
 [data-component="splunk-core:/splunkjs/mvc/components/MultiDropdown"],
 [data-component="splunk-core:/splunkjs/mvc/components/Dropdown"] {
 	width: 100% !important;
+	overflow-y: unset !important;
+	max-height: unset !important;
 }
 
 .splunk-choice-input-message,
