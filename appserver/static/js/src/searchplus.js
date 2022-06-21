@@ -2,18 +2,29 @@ require([
     'jquery',
 	'splunkjs/mvc',
 	'splunkjs/mvc/searchmanager',
+	'splunkjs/mvc/savedsearchmanager',
 	"splunkjs/mvc/postprocessmanager",
 	'splunkjs/mvc/simpleform/input/text',
 	'splunkjs/mvc/simpleform/input/multiselect',
 	'splunkjs/mvc/timerangeview',
 	"splunkjs/mvc/dropdownview",
 	'/static/app/searchplus/js/searchplus_view.min.js',
+	'/static/app/searchplus/js/format.min.js', 
 	"/static/app/searchplus/js/searchplus_icons.min.js"
-], function($, mvc, SearchManager, PostProcessManager, TextInput, MultiSelectInput, TimeRangeView, DropdownView, SearchPlusView) {
+], function($, mvc, SearchManager, SavedSearchManager, PostProcessManager, TextInput, MultiSelectInput, TimeRangeView, DropdownView, SearchPlusView, format) {
 
 	$dashboard = $('.dashboard-body').html(`
 		<div class="sp-view sp-flex-container">
 			<div class="sp-filter-container">
+				<div class="sp-settings-container">
+					<div class="sp-settings sp-clickable">
+						${icon_settings}
+					</div>
+					<div class="sp-settings-menu">
+						<div class="sp-settings-item sp-clickable sp-settings-view-search">View Filtered Search</div>
+						<div class="sp-settings-item sp-clickable sp-settings-rebuild">Rebuild Search Inventory</div>
+					</div>
+				</div>
 				<div class="sp-result-count sp-flex-container">${icon_filter}<span class="sp-result-count-value">0</span> Matched Searches</div>
 				<div class="sp-filter">
 					<div class="sp-input-group">
@@ -154,12 +165,12 @@ require([
 		earliest_time: 0,
 		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-		| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
-		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique mtr_technique_id
-			[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
-		| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique value="N/A"
-		| search field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
-		| sort $sort$`
+	| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
+	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique mtr_technique_id
+		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
+	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique value="N/A"
+	| search field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
+	| sort $sort$`
 	}, { tokens: true });
 
 	var SearchListManager2 = new PostProcessManager({
@@ -169,7 +180,7 @@ require([
 		preview: true,
 		cache: true,
 		search: `| streamstats count
-		| search count > 0  count <= 1000 `
+	| search count > 0  count <= 1000 `
 	}, { tokens: true });
 
 	var SearchPlusView = new SearchPlusView({
@@ -525,6 +536,7 @@ require([
 	$('.sp-input-group').each(function() { 			
 		update_filter_height($(this));	
 	});
+
 	$('.sp-filter-toggle').on('click', function() {
 		$(this).closest('.sp-input-group').toggleClass('closed');
 		if ($(this).hasClass('sp-filter-toggle-minus')) {
@@ -536,6 +548,84 @@ require([
 		}
 	});
 
+	$('.sp-filter-container').click(function() {
+		$('.sp-settings-menu').hide();
+	});
+
+	$('.sp-settings').on('click', function(e) {
+		e.stopPropagation();
+		$('.sp-settings-menu').toggle();
+	})
+
+	$('.sp-settings-view-search').on('click', function(e) {
+		let query = SearchListManager.query.attributes.search;
+		let search_url = '/app/searchplus/search?q=' + encodeURIComponent(query);
+		let $modal = $(`
+		<div class="modal fade modal-wide">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Filtered Search Inventory</h3>
+			</div>
+			<div class="modal-body">
+				<div class="sp-query-overflow">
+					<div class="sp-search-query">${format(query, true, true)}</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" data-dismiss="modal" class="btn">Cancel</a>
+				<a href="${search_url}" target="_blank" class="btn btn-primary">Run in Search</a>
+			</div>
+		</div>`);
+
+		$modal.on('hidden.bs.modal', () => {
+			$modal.remove();
+		});
+
+		$('body').append($modal);
+		$modal.modal('show');
+	});
+
+	let BuildInventoryManager = new SavedSearchManager({
+		id: "build_inventory_ssm",
+		searchname: "Search Inventory - Lookup Gen",
+		preview: true,
+		"dispatch.earliest_time": "0",
+		"dispatch.latest_time": "now",
+		app: "searchplus",
+		autostart: false
+	});
+
+	$('.sp-settings-rebuild').on('click', function(e) {
+		let $modal = $(`
+		<div class="modal fade" data-backdrop="static">
+			<div class="modal-header">
+				<span class="sp-loader"></span> Rebuilding Search Inventory ...
+			</div>
+		</div>`);
+
+		$modal.on('hidden.bs.modal', () => {
+			$modal.remove();
+		});
+
+		$('body').append($modal);
+		$modal.modal('show');
+
+		BuildInventoryManager.startSearch();
+		BuildInventoryManager.on('search:done', function(e) {
+			$modal.modal('hide');
+			SearchListManager.startSearch();
+		})
+		BuildInventoryManager.on('search:failed search:error', function(e) {
+			$('.modal-header').html(`<h3>${icon_alert} Error</h3>`);
+
+			$modal.append(`
+				<div class="modal-body">${e}</div>
+				<div class="modal-footer">
+					<a href="#" data-dismiss="modal" class="btn">Close</a>
+				</div>
+			`);
+		});
+	});
 
 	// ----------------------------------------------
 	// Functions

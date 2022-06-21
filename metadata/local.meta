@@ -175,3 +175,9 @@ export = none
 owner = admin
 version = 8.2.4
 modtime = 1654916338.095552000
+
+[savedsearches/Search%20Inventory%20-%20Lookup%20Gen]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1655836603.221280000
