@@ -166,10 +166,10 @@ require([
 		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
 	| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
-	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique mtr_technique_id
+	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
-	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique value="N/A"
-	| search field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
+	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
+	| search correlation_search=$correlation$ security_domain IN ($domain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
 	| sort $sort$`
 	}, { tokens: true });
 
