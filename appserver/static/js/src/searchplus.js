@@ -175,6 +175,8 @@ require([
 		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
 	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
 	| search correlation_search=$correlation$ security_domain IN ($domain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
+	| join type=left title [| inputlookup sp_search_resource_usage.csv]
+	| fillnull skipped run_time result_count mem_used scan_count value="N/A"
 	| sort $sort$`
 	}, { tokens: true });
 

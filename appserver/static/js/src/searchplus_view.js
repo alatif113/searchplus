@@ -52,6 +52,7 @@ define([
 						<div class="sp-search-details-nav sp-flex-container">
 							<div class="sp-nav-item sp-clickable selected" data-attr-section="general">General</div>
 							<div class="sp-nav-item sp-clickable" data-attr-section="attributes">Attributes</div>
+							<div class="sp-nav-item sp-clickable" data-attr-section="statistics">Statistics</div>
 						</div>
 						<div class="sp-nav-section sp-nav-section-general sp-flex-container" data-attr-section="general">
 							<div class="sp-query-container sp-card">
@@ -102,6 +103,28 @@ define([
 							<div class="sp-attribute-container">
 								<div class="sp-attribute-label">${icon_macros}<span>Macros</span></div>
 								<div class="sp-attribute sp-attribute-7">${viz._makeAttrMarkup(row.macro)}</div>
+							</div>
+						</div>
+						<div class="sp-nav-section sp-nav-section-statistics sp-flex-container" data-attr-section="statistics" style="display: none;">
+							<div class="sp-attribute-container">
+								<div class="sp-attribute-label"><span>Skipped Percent</span></div>
+								<div class="sp-attribute">${row.skipped == 0 || row.skipped == 'N/A' ? icon_check : row.skipped < 20 ? icon_alert : icon_error} ${row.skipped} %</div>
+							</div>
+							<div class="sp-attribute-container">
+								<div class="sp-attribute-label"><span>Average Run Time</span></div>
+								<div class="sp-attribute">${row.run_time < 300 || row.run_time == 'N/A' ? icon_check : row.run_time < 1200 ? icon_alert : icon_error} ${row.run_time} sec</div>
+							</div>
+							<div class="sp-attribute-container">
+								<div class="sp-attribute-label"><span>Average Memory Used</span></div>
+								<div class="sp-attribute">${row.mem_used < 1024 || row.mem_used == 'N/A' ? icon_check : row.mem_used < 4096 ? icon_alert : icon_error} ${row.mem_used} kb</div>
+							</div>
+							<div class="sp-attribute-container">
+								<div class="sp-attribute-label"><span>Average Events Scanned</span></div>
+								<div class="sp-attribute">${row.scan_count} events</div>
+							</div>
+							<div class="sp-attribute-container">
+								<div class="sp-attribute-label"><span>Average Result Count</span></div>
+								<div class="sp-attribute">${row.result_count} results</div>
 							</div>
 						</div>
 					</div>

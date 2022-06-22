@@ -180,7 +180,7 @@ modtime = 1654916338.095552000
 export = none
 owner = admin
 version = 8.2.4
-modtime = 1655853474.757100000
+modtime = 1655932144.635951000
 
 [views/searchplus]
 export = none
@@ -199,3 +199,20 @@ export = none
 owner = admin
 version = 8.2.4
 modtime = 1655921142.743098000
+
+[savedsearches/Search%20Resource%20Usage%20-%20Lookup%20Gen]
+version = 8.2.4
+modtime = 1655925111.706142000
+
+[lookups/sp_search_resource_usage.csv]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1655925081.081946000
+
+[savedsearches/Search%20Inventory%20Iterative%20-%20Lookup%20Gen]
+access = read : [ * ], write : [ admin, power ]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1655932153.400745000
