@@ -13,8 +13,8 @@ modtime = 1573004751.522680000
 
 [nav/default]
 owner = admin
-version = 7.3.1
-modtime = 1573924704.343840000
+version = 8.2.4
+modtime = 1655922427.292833000
 
 [savedsearches/Local%20Accounts]
 access = read : [ * ], write : [ admin, power ]
