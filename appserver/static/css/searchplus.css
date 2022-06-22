@@ -479,7 +479,7 @@ svg {
     position: absolute;
     top: 0;
     right: 0;
-    padding: 0 1rem;
+    padding: 0.2rem 1rem;
     gap: 1rem;
     background: #60769f;
     box-shadow: 1px 1px 2px rgb(0 0 0 / 10%);

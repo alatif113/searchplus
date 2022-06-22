@@ -227,7 +227,7 @@ require([
 	// ----------------------------------------------
 	var SortFilter = new DropdownView({
 		id: "sp_filter_sort",
-		choices: [{label: "Title", value: "title"}, {label: "App", value: "app"}, {label: "Owner", value: "owner"}, {label: "Updated", value: "updated"}, {label: "Next Scheduled Time", value: "next_scheduled"}, {label: "Sharing", value: "sharing"}, {label: "Status", value: "status"}],
+		choices: [{label: "Title", value: "title"}, {label: "App", value: "app"}, {label: "Owner", value: "owner"}, {label: "Updated", value: "updated"}, {label: "Next Scheduled Time", value: "next_scheduled_time"}, {label: "Sharing", value: "sharing"}, {label: "Status", value: "status"}],
         default: "title",
 		value: "$sort$",
         el: $('.sp-filter-sort')
