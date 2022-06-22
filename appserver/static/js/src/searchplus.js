@@ -670,10 +670,14 @@ require([
 	}
 
 	function create_pagination($container, result_count, current_page) {
+		
 		$container.html('');
 
 		let count_per_page = 100;
 		let page_count = Math.ceil(result_count / count_per_page);
+
+		if (page_count == 1) return;
+
 		let page_list = get_pagination(7, current_page, page_count);
 
 		if (current_page > 1) $container.append(`<div class="sp-page sp-page-prev sp-clickable">${icon_arrow_left}</div>`);
