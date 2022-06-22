@@ -132,6 +132,9 @@ require([
 				</div>
 				<div class="sp-search-list">
 				</div>
+				<div class="sp-pagination-container">
+					<div class="sp-pagination"></div>
+				</div>
 			</div>
 		</div>
 	`);
@@ -139,6 +142,8 @@ require([
 	// ----------------------------------------------
 	// Base Search Manager
 	// ----------------------------------------------
+	let tokens = mvc.Components.get("default");
+
 	new SearchManager({
 		id: "sm_base",
 		data: 'results',
@@ -147,7 +152,7 @@ require([
 		earliest_time: 0,
 		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-		| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
+		| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
 		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 			[eval <<FIELD>>=split(<<FIELD>>, "|")]
 		| foreach command datamodel field index macro lookup function
@@ -158,14 +163,14 @@ require([
 	// Main View
 	// ----------------------------------------------
 	var SearchListManager = new SearchManager({
-		id: "ppm_searchlist",
+		id: "sm_searchlist",
 		data: 'results',
 		preview: true,
 		cache: true,
 		earliest_time: 0,
 		latest_time: 'now',
 		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-	| where isnull(_time) OR _time >= relative_time(now(), "$updated$")
+	| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
 	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
 	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
@@ -173,19 +178,25 @@ require([
 	| sort $sort$`
 	}, { tokens: true });
 
-	var SearchListManager2 = new PostProcessManager({
-		id: "ppm_searchlist2",
-		manager: "ppm_searchlist",
+	// ----------------------------------------------
+	// Pagination
+	// ----------------------------------------------
+
+	update_page_offsets(1, 100);
+
+	var PaginationManager = new PostProcessManager({
+		id: "ppm_pagination",
+		manager: "sm_searchlist",
 		data: 'results',
 		preview: true,
 		cache: true,
 		search: `| streamstats count
-	| search count > 0  count <= 1000 `
+	| search count > $min_offset$  count <= $max_offset$`
 	}, { tokens: true });
 
 	var SearchPlusView = new SearchPlusView({
 		id: "sp_view",
-		managerid: "ppm_searchlist2",
+		managerid: "ppm_pagination",
 		el: $('.dashboard-body .sp-search-list')
 	}).render();
 
@@ -526,11 +537,16 @@ require([
 	// Events
 	// ----------------------------------------------
 	SearchListManager.on('search:done', function(e) {
-		console.log(this);
-		console.log(this.query.attributes.search);
 		let results = this.data('results');
-		let count = results.attributes.manager.attributes.data.resultCount;
-		$('.sp-result-count-value', $dashboard).html(count);
+		let result_count = results.attributes.manager.attributes.data.resultCount;
+		$('.sp-result-count-value', $dashboard).html(result_count);
+
+		let $pagination = $('.sp-pagination', $dashboard);
+		create_pagination($pagination, result_count, 1);
+	});
+
+	PaginationManager.on('search:done', function(e) {
+		console.log(this.query.attributes.search);
 	});
 
 	$('.sp-input-group').each(function() { 			
@@ -611,10 +627,13 @@ require([
 		$modal.modal('show');
 
 		BuildInventoryManager.startSearch();
+		BuildInventoryManager.on('search:progress', function(e) {
+			console.log(e);
+		});
 		BuildInventoryManager.on('search:done', function(e) {
 			$modal.modal('hide');
 			SearchListManager.startSearch();
-		})
+		});
 		BuildInventoryManager.on('search:failed search:error', function(e) {
 			$('.modal-header').html(`<h3>${icon_alert} Error</h3>`);
 
@@ -635,7 +654,6 @@ require([
 		$container.css('height', 'auto');
 		let height = $container.prop('scrollHeight');
 		$container.css('height', height + 'px');
-		console.log(height);
 	}
 
 	function multi_handle_all(multi) {
@@ -649,6 +667,58 @@ require([
 			let $container = $(multi.el.closest('.sp-input-group'));
 			update_filter_height($container);
 		});
+	}
+
+	function create_pagination($container, result_count, current_page) {
+		$container.html('');
+
+		let count_per_page = 100;
+		let page_count = Math.ceil(result_count / count_per_page);
+		let page_list = get_pagination(7, current_page, page_count);
+
+		if (current_page > 1) $container.append(`<div class="sp-page sp-page-prev sp-clickable">${icon_arrow_left}</div>`);
+		page_list.forEach(function(p) {
+			$page = $(`<div class="sp-page ${(p == current_page) ? 'selected' : ''}">${p}</div>`)
+			if (p != '...' && p != current_page) {
+				$page.addClass('sp-clickable');
+				$page.attr('data-attr-page', p);
+				$page.on('click', function() {
+					update_page_offsets(p, count_per_page);
+					create_pagination($container, result_count, p);
+				});
+			}
+			$page.appendTo($container);	
+		});
+		if (current_page < page_count) $container.append(`<div class="sp-page sp-page-next sp-clickable">${icon_arrow_right}</div>`);
+
+		$('.sp-page-prev', $container).on('click', function() {
+			new_page = current_page - 1;
+			update_page_offsets(new_page, count_per_page);
+			create_pagination($container, result_count, new_page);
+		});
+
+		$('.sp-page-next', $container).on('click', function() {
+			new_page = current_page + 1;
+			update_page_offsets(new_page, count_per_page);
+			create_pagination($container, result_count, new_page);
+		});
+	}
+
+	function get_pagination(count, page, total) {
+		const start = Math.max (1, Math.min (page - Math.floor ((count - 3) / 2), total - count + 2))
+		const end = Math.min (total, Math.max (page + Math.floor ((count - 2) / 2), count - 1))
+		return [
+			... (start > 2 ? [1, '...'] : start > 1 ? [1] : []), 
+			... Array .from ({length: end + 1 - start}, (_, i) => i + start),
+			... (end < total - 1 ? ['...', total] : end < total ? [total] : [])
+		]
+	}
+
+	function update_page_offsets(page, count_per_page) {
+		let min_offset = (page - 1) * count_per_page;
+		let max_offset = page * count_per_page;
+		tokens.set("min_offset", min_offset);
+		tokens.set("max_offset", max_offset);
 	}
 });
 

@@ -151,6 +151,7 @@ svg {
 
 .sp-icon {
 	width: 1rem;
+	height: 1rem;
 }
 
 .sp-flex-container {
@@ -179,6 +180,23 @@ svg {
 	color: var(--color-white);
 	overflow-x: hidden;
 	position: relative;
+	user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+}
+
+.sp-filter {
+	padding: 1rem;
+	height: calc(100vh - 127px);
+    overflow-y: auto;
+	-ms-overflow-style: none;  /* IE and Edge */
+  	scrollbar-width: none;  /* Firefox */
+}
+
+.sp-filter::-webkit-scrollbar {
+	display: none;
 }
 
 .sp-input-group {
@@ -286,17 +304,14 @@ svg {
     flex-grow: 1;
     font-size: .8rem;
     background-color: #fff;
-    width: calc(100vh - 78px);
+    width: calc(100% - 350px);
+	position: relative;
 }
 
-.sp-search-list,
-.sp-filter {
+.sp-search-list {
+	padding-bottom: 4rem;
 	height: calc(100vh - 127px);
     overflow-y: auto;
-}
-
-.sp-filter {
-	padding: 1rem;
 }
 
 .sp-search {
@@ -452,6 +467,12 @@ svg {
 	clear: both;
 	max-height: 350px;
 	overflow-y: auto;
+	-ms-overflow-style: none;  /* IE and Edge */
+  	scrollbar-width: none;  /* Firefox */
+}
+
+.sp-query-overflow::-webkit-scrollbar {
+	display: none;
 }
 
 .sp-query-controls-container {
@@ -768,6 +789,30 @@ dd.sp-severity-na::before {
 
 .modal-header .sp-icon {
 	width: 1.2rem;
+}
+
+.sp-pagination-container {
+	position: absolute;
+    bottom: 1rem;
+	text-align: center;
+	width: 100%;
+}
+
+.sp-pagination {
+	box-shadow: 0px 0px 16px rgba(0,0,0,0.1);
+	display: inline-block;
+}
+
+.sp-page {
+    padding: 0.5rem 1rem;
+    background: var(--color-input-light);
+    color: var(--color-white);
+    display: inline-block;
+}
+
+.sp-page.sp-clickable:hover,
+.sp-page.selected {
+    background: var(--color-input-lighter);
 }
 
 /* Override Splunk Inputs */

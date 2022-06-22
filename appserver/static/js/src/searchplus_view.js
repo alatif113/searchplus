@@ -39,11 +39,7 @@ define([
 				var $markup = $(`
 				<div class="sp-search-row">
 					<div class="sp-search sp-clickable sp-flex-container">
-						<div class="sp-search-col sp-search-dropdown sp-flex-container">
-							<svg class="sp-icon" width="24" height="24" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M9 6L15 12L9 18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-							</svg>
-						</div>
+						<div class="sp-search-col sp-search-dropdown sp-flex-container">${icon_arrow_right}</div>
 						<div class="sp-search-col sp-search-label">${row.title}</div>
 						<div class="sp-search-col sp-search-app">${row.app}</div>
 						<div class="sp-search-col sp-search-owner">${row.owner}</div>
