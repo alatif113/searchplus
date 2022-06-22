@@ -151,7 +151,7 @@ require([
 		cache: true,
 		earliest_time: 0,
 		latest_time: 'now',
-		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
+		search: `| inputlookup sp_search_inventory where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
 		| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
 		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 			[eval <<FIELD>>=split(<<FIELD>>, "|")]
@@ -169,7 +169,7 @@ require([
 		cache: true,
 		earliest_time: 0,
 		latest_time: 'now',
-		search: `| inputlookup search_decomposition.csv where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
+		search: `| inputlookup sp_search_inventory where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
 	| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
 	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
 		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]

@@ -187,3 +187,15 @@ export = none
 owner = admin
 version = 8.2.4
 modtime = 1655916868.479114000
+
+[lookups/sp_mitre_enrichment.csv]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1655920877.370619000
+
+[transforms/sp_search_inventory]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1655921142.743098000
