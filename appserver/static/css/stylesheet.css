@@ -746,6 +746,7 @@ i.icon-disabled::before {
 .search-results {
     height: calc(100vh - 122px);;
     overflow-y: scroll;
+    padding-bottom: 5rem;
 }
 
 .search-results > li {
