@@ -9,204 +9,207 @@ require([
 	'splunkjs/mvc/timerangeview',
 	"splunkjs/mvc/dropdownview",
 	'/static/app/searchplus/js/searchplus_view.min.js',
-	'/static/app/searchplus/js/format.min.js', 
-	"/static/app/searchplus/js/searchplus_icons.min.js"
+	'/static/app/searchplus/js/format.min.js'
 ], function($, mvc, SearchManager, SavedSearchManager, PostProcessManager, TextInput, MultiSelectInput, TimeRangeView, DropdownView, SearchPlusView, format) {
 
-	$dashboard = $('.dashboard-body').html(`
-		<div class="sp-view sp-flex-container">
-			<div class="sp-filter-container">
-				<div class="sp-settings-container">
-					<div class="sp-settings sp-clickable">
-						${icon_settings}
-					</div>
-					<div class="sp-settings-menu">
-						<div class="sp-settings-item sp-clickable sp-settings-view-search">View Filtered Search</div>
-						<div class="sp-settings-item sp-clickable sp-settings-rebuild">Rebuild Search Inventory</div>
-					</div>
-				</div>
-				<div class="sp-result-count sp-flex-container">${icon_filter}<span class="sp-result-count-value">0</span> Matched Searches</div>
-				<div class="sp-filter">
-					<div class="sp-input-group">
-						<div class="sp-input-group-label sp-flex-container">
-							<span>General Filters</span>
-							<span class="sp-filter-toggle sp-clickable sp-filter-toggle-minus">${icon_minus}</span>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_sort}<span>Sort By</span></div>
-							<div class="sp-filter-sort sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_updated}<span>Last Updated</span></div>
-							<div class="sp-filter-updated sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_search}<span>Search</span></div>
-							<div class="sp-filter-keyword sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_app}<span>App</span></div>
-							<div class="sp-filter-app sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_owner}<span>Owner</span></div>
-							<div class="sp-filter-owner sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_status}<span>Status</span></div>
-							<div class="sp-filter-status sp-input"></div>
-						</div>
-					</div>
-					<div class="sp-input-group">
-						<div class="sp-input-group-label sp-flex-container">
-							<span>Attribute Filters</span>
-							<span class="sp-filter-toggle sp-clickable sp-filter-toggle-minus">${icon_minus}</span>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_commands}<span>Commands</span></div>
-							<div class="sp-filter-command sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_datamodels}<span>Datamodels</span></div>
-							<div class="sp-filter-datamodel sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_fields}<span>Fields</span></div>
-							<div class="sp-filter-field sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_functions}<span>Functions</span></div>
-							<div class="sp-filter-function sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_indexes}<span>Indexes</span></div>
-							<div class="sp-filter-index sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_lookups}<span>Lookups</span></div>
-							<div class="sp-filter-lookup sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_macros}<span>Macros</span></div>
-							<div class="sp-filter-macro sp-input"></div>
-						</div>
-					</div>
-					<div class="sp-input-group">
-						<div class="sp-input-group-label sp-flex-container">
-							<span>Correlation Serach Filters</span>
-							<span class="sp-filter-toggle sp-clickable sp-filter-toggle-minus">${icon_minus}</span>						
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_shield}<span>Correlation Search</span></div>
-							<div class="sp-filter-correlation sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_label}<span>Security Domain</span></div>
-							<div class="sp-filter-domain sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_severity}<span>Severity</span></div>
-							<div class="sp-filter-severity sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_tactics}<span>MITRE ATT&CK Tactic</span></div>
-							<div class="sp-filter-mtr-tactic sp-input"></div>
-						</div>
-						<div class="sp-input-container">
-							<div class="sp-input-label sp-flex-container">${icon_techniques}<span>MITRE ATT&CK Technique</span></div>
-							<div class="sp-filter-mtr-technique sp-input"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="sp-search-container">
-				<div class="sp-search-header sp-search-row sp-flex-container">
-					<div class="sp-search-col"></div>
-					<div class="sp-search-col sp-flex-container">${icon_searchname}<span>Title</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_app}<span>App</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_owner}<span>Owner</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_updated}<span>Updated</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_nextschedule}<span>Next Scheduled Time</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_share}<span>Sharing</span></div>
-					<div class="sp-search-col sp-flex-container">${icon_status}<span>Status</span></div>
-				</div>
-				<div class="sp-search-list">
-				</div>
-				<div class="sp-pagination-container">
-					<div class="sp-pagination"></div>
-				</div>
-			</div>
-		</div>
-	`);
+    let PAGINATION_CURRENT_PAGE = 1;
+    let PAGINATION_COUNT_PER_PAGE = 100;
+    let INPUTS_SM_QUERY = `| inputlookup sp_search_inventory where status=$status$
+		| search title="*$keyword$*" OR description="*$keyword$*"
+        | where _time >= coalesce(relative_time(now(), "$updated$"), 0)
+        | foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
+            [eval <<FIELD>>=split(<<FIELD>>, "|")]`;
+    let CONTENT_SM_QUERY = `| inputlookup sp_search_inventory where status=$status$
+		| search title="*$keyword$*" OR description="*$keyword$*"
+        | where _time >= coalesce(relative_time(now(), "$updated$"), 0)
+        | foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
+            [eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
+        | fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
+        | search correlation_search=$correlation$ security_domain IN ($securitydomain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
+        | join type=left title [| inputlookup sp_search_resource_usage.csv]
+        | fillnull skipped run_time result_count mem_used scan_count value="N/A"
+        | sort $sort$`;
+	let PAGINATION_SM_QUERY = `| streamstats count
+		| search count > $min_offset$  count <= $max_offset$`;
 
-	// ----------------------------------------------
-	// Base Search Manager
-	// ----------------------------------------------
-	let tokens = mvc.Components.get("default");
+    let tokens = mvc.Components.get("default");
+    
+    update_page_offsets(PAGINATION_CURRENT_PAGE, PAGINATION_COUNT_PER_PAGE);
 
-	new SearchManager({
-		id: "sm_base",
+	let $dashboard = $('.dashboard-body').html(`
+        <div class="view-container">
+            <section aria-label="Search Filters" class="sidebar">
+                <header class="sidebar-header">
+                    <i class="icon icon-filter"></i><span class="result-count">0</span><span> Matched Searches</span>
+                    <button class="btn-more btn-transparent"><i class="icon icon-more right-align"></i></button>
+                </header>
+                <div class="sidebar-content">
+                    <section aria-label="General Filters" class="input-group">
+                        <header class="input-group-label">
+                            <h1>General Filters</h1>
+                            <button class="btn-transparent"><i class="icon icon-minus right-align"></i></button>
+                        </header>
+                        <div class="input-container">
+                            <label><i class="icon icon-sort"></i>Sort By</label>
+                            <div class="splunk-input-container input-sort"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-clock"></i>Last Updated</label>
+                            <div class="splunk-input-container input-updated"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-search"></i>Title / Description</label>
+                            <div class="splunk-input-container input-keyword"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-folder"></i>App</label>
+                            <div class="splunk-input-container input-app"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-user"></i>Owner</label>
+                            <div class="splunk-input-container input-owner"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-toggle"></i>Status</label>
+                            <div class="splunk-input-container input-status"></div>
+                        </div>
+                    </section>
+                    <section aria-label="Attribute Filters" class="input-group">
+                        <header class="input-group-label">
+                            <h1>Attribute Filters</h1>
+                            <button class="btn-transparent"><i class="icon icon-minus right-align"></i></button>
+                        </header>
+                        <div class="input-container">
+                            <label><i class="icon icon-command"></i>Commands</label>
+                            <div class="splunk-input-container input-command"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-datamodel"></i>Datamodels</label>
+                            <div class="splunk-input-container input-datamodel"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-field"></i>Fields</label>
+                            <div class="splunk-input-container input-field"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-function"></i>Functions</label>
+                            <div class="splunk-input-container input-function"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-index"></i>Indexes</label>
+                            <div class="splunk-input-container input-index"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-lookup"></i>Lookups</label>
+                            <div class="splunk-input-container input-lookup"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-macro"></i>Macros</label>
+                            <div class="splunk-input-container input-macro"></div>
+                        </div>
+                    </section>
+                    <section aria-label="Correlation Search Filters" class="input-group">
+                        <header class="input-group-label">
+                            <h1>Correlation Search Filters</h1>
+                            <button class="btn-transparent"><i class="icon icon-minus right-align"></i></button>
+                        </header>
+                        <div class="input-container">
+                            <label><i class="icon icon-correlation"></i>Correlation Search</label>
+                            <div class="splunk-input-container input-correlation"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-securitydomain"></i>Security Domain</label>
+                            <div class="splunk-input-container input-securitydomain"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-severity"></i>Severity</label>
+                            <div class="splunk-input-container input-severity"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-tactic"></i>MITRE ATT&CK Tactics</label>
+                            <div class="splunk-input-container input-tactic"></div>
+                        </div>
+                        <div class="input-container">
+                            <label><i class="icon icon-technique"></i>MITRE AYY&CK Techniques</label>
+                            <div class="splunk-input-container input-technique"></div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            <section class="content">
+                <header class="content-header">
+                    <div role="none"></div>
+                    <div><i class="icon icon-search"></i>Title</div>
+                    <div><i class="icon icon-folder"></i>App</div>
+                    <div><i class="icon icon-user"></i>Owner</div>
+                    <div><i class="icon icon-clock"></i>Updated</div>
+                    <div><i class="icon icon-calendar"></i>Next Scheduled Time</div>
+                    <div><i class="icon icon-share"></i>Sharing</div>
+                    <div><i class="icon icon-toggle"></i>Status</div>
+                </header>
+                <ol role="none" class="search-results">
+                </ol>
+                <ul class="pagination" role="list"></ul>
+            </section>
+        </div>
+    `);
+
+    // #############################################
+	// Search Managers
+	// #############################################
+
+    // Inputs Base Search Manager
+    let InputsSM = new SearchManager({
+		id: "sm_inputs",
 		data: 'results',
 		preview: true,
 		cache: true,
-		earliest_time: 0,
-		latest_time: 'now',
-		search: `| inputlookup sp_search_inventory where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-		| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
-		| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
-			[eval <<FIELD>>=split(<<FIELD>>, "|")]
-		| foreach command datamodel field index macro lookup function
-			[eval <<FIELD>>=lower(<<FIELD>>)]`
+		search: INPUTS_SM_QUERY
 	}, { tokens: true });
 
-	// ----------------------------------------------
-	// Main View
-	// ----------------------------------------------
-	var SearchListManager = new SearchManager({
-		id: "sm_searchlist",
+    // Content Base Search Manager
+    let ContentSM = new SearchManager({
+		id: "sm_content",
 		data: 'results',
 		preview: true,
 		cache: true,
-		earliest_time: 0,
-		latest_time: 'now',
-		search: `| inputlookup sp_search_inventory where (title="*$keyword$*" OR description="*$keyword$*") status=$status$
-	| where _time >= coalesce(relative_time(now(), "$updated$"), 0)
-	| foreach command datamodel field index macro lookup function mtr_tactic mtr_technique
-		[eval <<FIELD>>=lower(split(<<FIELD>>, "|"))]
-	| fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
-	| search correlation_search=$correlation$ security_domain IN ($domain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
-	| join type=left title [| inputlookup sp_search_resource_usage.csv]
-	| fillnull skipped run_time result_count mem_used scan_count value="N/A"
-	| sort $sort$`
+		search: CONTENT_SM_QUERY
 	}, { tokens: true });
 
-	// ----------------------------------------------
-	// Pagination
-	// ----------------------------------------------
-
-	update_page_offsets(1, 100);
-
-	var PaginationManager = new PostProcessManager({
-		id: "ppm_pagination",
-		manager: "sm_searchlist",
+    // Pagination Search Manager
+    let PaginationSM = new PostProcessManager({
+		id: "sm_pagination",
+		manager: "sm_content",
 		data: 'results',
 		preview: true,
 		cache: true,
-		search: `| streamstats count
-	| search count > $min_offset$  count <= $max_offset$`
+		search: PAGINATION_SM_QUERY
 	}, { tokens: true });
 
-	var SearchPlusView = new SearchPlusView({
-		id: "sp_view",
-		managerid: "ppm_pagination",
-		el: $('.dashboard-body .sp-search-list')
+    // Pagination Search Manager
+    let RebuildSM = new SavedSearchManager({
+		id: "sm_rebuild",
+		searchname: "Search Inventory - Lookup Gen",
+		app: "searchplus",
+		autostart: false
+	});
+
+    // #############################################
+	// Views
+	// #############################################
+    let SPView = new SearchPlusView({
+		id: "view_searchplus",
+		managerid: "sm_pagination",
+		el: $('.dashboard-body .search-results')
 	}).render();
 
-	// ----------------------------------------------
-	// Updated Filter
-	// ----------------------------------------------
-	var UpdatedFilter = new DropdownView({
-		id: "sp_filter_updated",
+    // #############################################
+	// Inputs
+	// #############################################
+
+    // Updated Input
+    let UpdatedInput = new DropdownView({
+		id: "input_updated",
 		choices: [
 			{label: "All Time", value: "-1000y"}, 
 			{label: "Last 1 Hour", value: "-1h"}, 
@@ -219,381 +222,397 @@ require([
 		],
         default: "-1000y",
 		value: "$updated$",
-        el: $('.sp-filter-updated')
+        el: $('.input-updated')
     }, {tokens: true}).render();
 
-	// ----------------------------------------------
-	// Sort Filter
-	// ----------------------------------------------
-	var SortFilter = new DropdownView({
-		id: "sp_filter_sort",
-		choices: [{label: "Title", value: "title"}, {label: "App", value: "app"}, {label: "Owner", value: "owner"}, {label: "Updated", value: "updated"}, {label: "Next Scheduled Time", value: "next_scheduled_time"}, {label: "Sharing", value: "sharing"}, {label: "Status", value: "status"}],
+    // Sort Input
+    let SortInput = new DropdownView({
+		id: "input_sort",
+		choices: [
+			{label: "Title", value: "title"}, 
+			{label: "App", value: "app"}, 
+			{label: "Owner", value: "owner"}, 
+			{label: "Updated", value: "-updated"}, 
+			{label: "Next Scheduled Time", value: "-next_scheduled_time"}, 
+			{label: "Sharing", value: "sharing"}, 
+			{label: "Status", value: "status"}, 
+			{label: "Skipped Percentage", value: "-skipped"},
+			{label: "Avg. Memory Used", value: "-mem_used"},
+			{label: "Avg. Run Time", value: "-run_time"},
+			{label: "Avg. Events Scanned", value: "-scan_count"},
+			{label: "Avg. Result Count", value: "-result_count"}
+		],
         default: "title",
 		value: "$sort$",
-        el: $('.sp-filter-sort')
+        el: $('.input-sort')
     }, {tokens: true}).render();
 
-	// ----------------------------------------------
-	// Keyword Filter
-	// ----------------------------------------------
-	var KeywordFilter = new TextInput({
-		id: "sp_filter_keyword",
+    // Keyword Input
+    let KeywordInput = new TextInput({
+		id: "input_keyword",
 		default: "",
 		value: "$keyword$",
-		el: $('.sp-filter-keyword')
+		el: $('.input-keyword')
 	}, {tokens: true}).render();
 
-	// ----------------------------------------------
-	// App Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_app",
-		managerid: "sm_base",
+    // App Input
+    new PostProcessManager({
+		id: "sm_app",
+		managerid: "sm_inputs",
 		search: '| table app | dedup app | sort app'
 	});
 
-	var AppFilter = new MultiSelectInput({
-		id: "sp_filter_app",
+	var AppInput = new MultiSelectInput({
+		id: "input_app",
 		choices: [{label: "All", value: "*"}],
-		managerid: "ppm_app",
+        default: "*",
+		managerid: "sm_app",
 		labelField: "app",
 		valueField: "app",
 		value: "$app$",
-		el: $('.sp-filter-app')
+		el: $('.input-app')
 	}, {tokens: true}).render();
 
-	multi_handle_all(AppFilter);
+    multi_handle_all(AppInput);
 
-	// ----------------------------------------------
-	// Owner Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_owner",
-		managerid: "sm_base",
+    // Owner Input
+    new PostProcessManager({
+		id: "sm_owner",
+		managerid: "sm_inputs",
 		search: '| stats count by owner | sort owner'
 	});
 
-	var OwnerFilter = new MultiSelectInput({
-		id: "sp_filter_owner",
+	let OwnerInput = new MultiSelectInput({
+		id: "input_owner",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_owner",
+		managerid: "sm_owner",
 		labelField: "owner",
 		valueField: "owner",
 		value: "$owner$",
-		el: $('.sp-filter-owner')
+		el: $('.input-owner')
 	}, {tokens: true}).render();
 
-	multi_handle_all(OwnerFilter);
+    multi_handle_all(OwnerInput);
 
-	// ----------------------------------------------
-	// Status Filter
-	// ----------------------------------------------
-	var StatusFilter = new DropdownView({
-		id: "sp_filter_status",
-		choices: [{label: "All", value: "*"}, {label: "Enabled", value: "Enabled"}, {label: "Disabled", value: "Disabled"}],
+    // Status Input
+    let StatusInput = new DropdownView({
+		id: "input_status",
+		choices: [{label: "All", value: "*"}, {label: "Enabled", value: "enabled"}, {label: "Disabled", value: "disabled"}],
         default: "*",
 		value: "$status$",
-        el: $('.sp-filter-status')
+        el: $('.input-status')
 	}, {tokens: true}).render();
 
-	// ----------------------------------------------
-	// Command Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_command",
-		managerid: "sm_base",
+    // Command Input
+    new PostProcessManager({
+		id: "sm_command",
+		managerid: "sm_inputs",
 		search: '| stats count by command | sort command'
 	});
 
-	var CommandFilter = new MultiSelectInput({
-		id: "sp_filter_command",
+	let CommandInput = new MultiSelectInput({
+		id: "input_command",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_command",
-		valuePrefix: "command=",
-		delimeter: " OR ",
+		managerid: "sm_command",
 		labelField: "command",
 		valueField: "command",
 		value: "$command$",
-		el: $('.sp-filter-command')
+		el: $('.input-command')
 	}, {tokens: true}).render();
 
-	multi_handle_all(CommandFilter);
+    multi_handle_all(CommandInput);
 
-	// ----------------------------------------------
-	// Datamodel Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_datamodel",
-		managerid: "sm_base",
+    // Datamodel Input
+    new PostProcessManager({
+		id: "sm_datamodel",
+		managerid: "sm_inputs",
 		search: '| stats count by datamodel | sort datamodel'
 	});
 
-	var DatamodelFilter = new MultiSelectInput({
-		id: "sp_filter_datamodel",
+	let DataModelInput = new MultiSelectInput({
+		id: "input_datamodel",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_datamodel",
+		managerid: "sm_datamodel",
 		labelField: "datamodel",
 		valueField: "datamodel",
 		value: "$datamodel$",
-		el: $('.sp-filter-datamodel')
+		el: $('.input-datamodel')
 	}, {tokens: true}).render();
 
-	multi_handle_all(DatamodelFilter);
+    multi_handle_all(DataModelInput);
 
-	// ----------------------------------------------
-	// Field Filter
-	// ----------------------------------------------
-	var FieldFilter = new MultiSelectInput({
-		id: "sp_filter_field",
+    // Field Input
+    let FieldInput = new MultiSelectInput({
+		id: "input_field",
 		allowCustomValues: true,
 		choices: [{label: "All", value: "*"}],
 		default: "*",
 		value: "$field$",
-		el: $('.sp-filter-field')
+		el: $('.input-field')
 	}, {tokens: true}).render();
 
-	multi_handle_all(FieldFilter);
+    multi_handle_all(FieldInput);
 
-	// ----------------------------------------------
-	// Function Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_function",
-		managerid: "sm_base",
+    // Function Input
+    new PostProcessManager({
+		id: "sm_function",
+		managerid: "sm_inputs",
 		search: '| stats count by function | sort function'
 	});
 
-	var FunctionFilter = new MultiSelectInput({
-		id: "sp_filter_function",
+	let FunctionInput = new MultiSelectInput({
+		id: "input_function",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_function",
+		managerid: "sm_function",
 		labelField: "function",
 		valueField: "function",
 		value: "$function$",
-		el: $('.sp-filter-function')
+		el: $('.input-function')
 	}, {tokens: true}).render();
 
-	multi_handle_all(FunctionFilter);
+    multi_handle_all(FunctionInput);
 
-	// ----------------------------------------------
-	// Index Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_index",
-		managerid: "sm_base",
+    // Index Input
+    new PostProcessManager({
+		id: "sm_index",
+		managerid: "sm_inputs",
 		search: '| stats count by index | sort index'
 	});
 
-	var IndexFilter = new MultiSelectInput({
-		id: "sp_filter_index",
+	let IndexInput = new MultiSelectInput({
+		id: "input_index",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_index",
+		managerid: "sm_index",
 		labelField: "index",
 		valueField: "index",
 		value: "$index$",
-		el: $('.sp-filter-index')
+		el: $('.input-index')
 	}, {tokens: true}).render();
 
-	multi_handle_all(IndexFilter);
+    multi_handle_all(IndexInput);
 
-	// ----------------------------------------------
-	// Lookup Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_lookup",
-		managerid: "sm_base",
+    // Lookup Input
+    new PostProcessManager({
+		id: "sm_lookup",
+		managerid: "sm_inputs",
 		search: '| stats count by lookup | sort lookup'
 	});
 
-	var LookupFilter = new MultiSelectInput({
-		id: "sp_filter_lookup",
+	let LookupInput = new MultiSelectInput({
+		id: "input_lookup",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_lookup",
+		managerid: "sm_lookup",
 		labelField: "lookup",
 		valueField: "lookup",
 		value: "$lookup$",
-		el: $('.sp-filter-lookup')
+		el: $('.input-lookup')
 	}, {tokens: true}).render();
 
-	multi_handle_all(LookupFilter);
+    multi_handle_all(LookupInput);
 
-	// ----------------------------------------------
-	// Macro Filter
-	// ----------------------------------------------
-	new PostProcessManager({
-		id: "ppm_macro",
-		managerid: "sm_base",
+    // Macro Input
+    new PostProcessManager({
+		id: "sm_macro",
+		managerid: "sm_inputs",
 		search: '| stats count by macro | sort macro'
 	});
 
-	var MacroFilter = new MultiSelectInput({
-		id: "sp_filter_macro",
+	let MacroInput = new MultiSelectInput({
+		id: "input_macro",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_macro",
+		managerid: "sm_macro",
 		labelField: "macro",
 		valueField: "macro",
 		value: "$macro$",
-		el: $('.sp-filter-macro')
+		el: $('.input-macro')
 	}, {tokens: true}).render();
 
-	multi_handle_all(MacroFilter);
+    multi_handle_all(MacroInput);
 
-	// ----------------------------------------------
-	// Correlation Search Filter
-	// ----------------------------------------------
-	var CorrelationFilter = new DropdownView({
-		id: "sp_filter_correlation",
+
+	// Correlation Search Input
+	var CorrelationInput = new DropdownView({
+		id: "input_correlation",
 		choices: [{label: "All", value: "*"}, {label: "Yes", value: "yes"}, {label: "No", value: "no"}],
         default: "*",
 		value: "$correlation$",
-        el: $('.sp-filter-correlation')
+        el: $('.input-correlation')
 	}, {tokens: true}).render();
 
-	// ----------------------------------------------
-	// Severity Filter
-	// ----------------------------------------------
-	var SeverityFilter = new MultiSelectInput({
-		id: "sp_filter_severity",
+	// Severity Input
+	var SeverityInput = new MultiSelectInput({
+		id: "input_severity",
 		choices: [{label: "All", value: "*"}, {label: "Critical", value: "critical"}, {label: "High", value: "high"}, {label: "Medium", value: "medium"}, {label: "Low", value: "low"}, {label: "Informational", value: "informational"}],
 		default: "*",
 		value: "$severity$",
-		el: $('.sp-filter-severity')
+		el: $('.input-severity')
 	}, {tokens: true}).render();
 
-	multi_handle_all(SeverityFilter);
+    multi_handle_all(SeverityInput);
 
-	// ----------------------------------------------
-	// Security Domain Filter
-	// ----------------------------------------------
+	// Security Domain Input
 	new PostProcessManager({
-		id: "ppm_domain",
-		managerid: "sm_base",
+		id: "sm_securitydomain",
+		managerid: "sm_inputs",
 		search: '| stats count by security_domain | sort security_domain'
 	});
 
-	var DomainFilter = new MultiSelectInput({
-		id: "sp_filter_domain",
+	var SecurityDomainInput = new MultiSelectInput({
+		id: "input_securitydomain",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		value: "$domain$",
-		managerid: "ppm_domain",
+		value: "$securitydomain$",
+		managerid: "sm_securitydomain",
 		labelField: "security_domain",
 		valueField: "security_domain",
-		el: $('.sp-filter-domain')
+		el: $('.input-securitydomain')
 	}, {tokens: true}).render();
 
-	multi_handle_all(DomainFilter);
+    multi_handle_all(SecurityDomainInput);
 
-	// ----------------------------------------------
-	// Tactic Filter
-	// ----------------------------------------------
+	// Tactic Input
 	new PostProcessManager({
-		id: "ppm_tactic",
-		managerid: "sm_base",
+		id: "sm_tactic",
+		managerid: "sm_inputs",
 		search: '| stats count by mtr_tactic | sort mtr_tactic | eval mtr_tactic_quoted="\\"".mtr_tactic."\\""'
 	});
 
-	var TacticFilter = new MultiSelectInput({
-		id: "sp_filter_tactic",
+	var TacticInput = new MultiSelectInput({
+		id: "input_tactic",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_tactic",
+		managerid: "sm_tactic",
 		labelField: "mtr_tactic",
 		valueField: "mtr_tactic_quoted",
 		value: "$tactic$",
-		el: $('.sp-filter-mtr-tactic')
+		el: $('.input-tactic')
 	}, {tokens: true}).render();
 
-	multi_handle_all(TacticFilter);
+    multi_handle_all(TacticInput);
 
-	// ----------------------------------------------
-	// Technique Filter
-	// ----------------------------------------------
+
+	// Technique Input
 	new PostProcessManager({
-		id: "ppm_technique",
-		managerid: "sm_base",
+		id: "sm_technique",
+		managerid: "sm_inputs",
 		search: '| stats count by mtr_technique | sort mtr_technique | eval mtr_technique_quoted="\\"".mtr_technique."\\""'
 	});
 
-	var TechniqueFilter = new MultiSelectInput({
-		id: "sp_filter_techniuqe",
+	var TechniqueInput= new MultiSelectInput({
+		id: "input_techniuqe",
 		choices: [{label: "All", value: "*"}],
 		default: "*",
-		managerid: "ppm_technique",
+		managerid: "sm_technique",
 		labelField: "mtr_technique",
 		valueField: "mtr_technique_quoted",
 		value: "$technique$",
-		el: $('.sp-filter-mtr-technique')
+		el: $('.input-technique')
 	}, {tokens: true}).render();
+  
+    multi_handle_all(TechniqueInput);
 
-	multi_handle_all(TechniqueFilter);
-
-	// ----------------------------------------------
+    // #############################################
 	// Events
-	// ----------------------------------------------
-	SearchListManager.on('search:done', function(e) {
+	// #############################################
+
+    ContentSM.on('search:done', function(e) {
 		let results = this.data('results');
 		let result_count = results.attributes.manager.attributes.data.resultCount;
-		$('.sp-result-count-value', $dashboard).html(result_count);
+		$('.result-count', $dashboard).html(result_count.toLocaleString());
 
-		let $pagination = $('.sp-pagination', $dashboard);
+		let $pagination = $('.pagination', $dashboard);
 		create_pagination($pagination, result_count, 1);
 	});
 
-	PaginationManager.on('search:done', function(e) {
-		console.log(this.query.attributes.search);
-	});
-
-	$('.sp-input-group').each(function() { 			
-		update_filter_height($(this));	
-	});
-
-	$('.sp-filter-toggle').on('click', function() {
-		$(this).closest('.sp-input-group').toggleClass('closed');
-		if ($(this).hasClass('sp-filter-toggle-minus')) {
-			$(this).html(icon_plus)
-			$(this).removeClass('sp-filter-toggle-minus').addClass('sp-filter-toggle-plus')
-		} else if ($(this).hasClass('sp-filter-toggle-plus')) {
-			$(this).html(icon_minus)
-			$(this).removeClass('sp-filter-toggle-plus').addClass('sp-filter-toggle-minus')
+    $('.input-group-label button').on('click', function() {
+		$(this).closest('section').children('div').toggle();
+        let $icon = $('i.icon', $(this));
+		if ($icon.hasClass('icon-minus')) {
+			$icon.removeClass('icon-minus').addClass('icon-plus');
+		} else {
+            $icon.removeClass('icon-plus').addClass('icon-minus');
 		}
 	});
 
-	$('.sp-filter-container').click(function() {
-		$('.sp-settings-menu').hide();
-	});
-
-	$('.sp-settings').on('click', function(e) {
-		e.stopPropagation();
-		$('.sp-settings-menu').toggle();
-	})
-
-	$('.sp-settings-view-search').on('click', function(e) {
-		let query = SearchListManager.query.attributes.search;
+    $('.btn-more').on('click', function(e) {
+		let query = ContentSM.query.attributes.search;
 		let search_url = '/app/searchplus/search?q=' + encodeURIComponent(query);
 		let $modal = $(`
-		<div class="modal fade modal-wide">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h3>Filtered Search Inventory</h3>
-			</div>
-			<div class="modal-body">
-				<div class="sp-query-overflow">
-					<div class="sp-search-query">${format(query, true, true)}</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="#" data-dismiss="modal" class="btn">Cancel</a>
-				<a href="${search_url}" target="_blank" class="btn btn-primary">Run in Search</a>
-			</div>
-		</div>`);
+            <div class="modal fade modal-wide">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h1>Search+ Configuration</h1>
+                </div>
+                <div class="modal-body">
+                    <section class="">
+                        <h2>Filtered Search Query</h2>
+                        <p>The currently filtered search list can be derived using this query:</p>
+                        <div class="query-container">    
+                            <div class="query-overflow">
+                                <div class="spl-query">${format(query)}</div>
+                            </div>
+                            <menu role="list">
+                                <li><a href="${search_url}" target="_blank" class="query-search btn-primary"><i class="icon icon-search"></i>Search</a></li>
+                                <li><a href="#" class="query-copy btn-primary"><i class="icon icon-copy"></i>Copy</a></li>
+                            </menu>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Rebuild Search Inventory</h2>
+                        <p>Run the lookup generation search to re-populate the search_inventory lookup. This automatically happens once a day by default.</p>
+                        <button class="btn-primary btn-rebuild"><i class="icon icon-refresh"></i>Rebuild</button><span class="message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
+                    </section>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>`);
+
+        $('.query-copy', $modal).on('click', function() {
+            let search = $('.spl-query', $(this).closest('.query-container')).text(); 
+            let $icon = $('i.icon', $(this));
+            navigator.clipboard.writeText(search).then(function () {
+                $icon.removeClass('icon-copy').addClass('animate-bounce-in icon-check').delay(1000).queue(function() {
+                    $icon.removeClass('animate-bounce-in icon-check').addClass('icon-copy').dequeue();
+                });
+            });
+        })
+
+        $('.btn-rebuild', $modal).on('click', function() {
+            $('.btn-rebuild').addClass('disabled');
+            $('.close', $modal).addClass('disabled');
+            $('.modal-backdrop').addClass('disabled');
+            $('.message', $modal).show();
+            
+            let $section = $(this).closest('section');
+            
+            RebuildSM.startSearch();
+
+            RebuildSM.on('search:done search:failed search:error search:canceled', function(e) {
+                $('.btn-rebuild').removeClass('disabled');
+                $('.close', $modal).removeClass('disabled');
+                $('.modal-backdrop').removeClass('disabled');
+            });
+
+            RebuildSM.on('search:done', function(e) {
+                ContentSM.startSearch();
+                $('.message i.icon', $modal).removeClass().addClass('icon icon-check');
+                $('.message').removeClass('error').addClass('success');
+                $('.message span').text('Complete!');
+            });
+
+            RebuildSM.on('search:failed search:error', function(e) {    
+                $('.message i.icon', $modal).removeClass().addClass('icon icon-error');
+                $('.message').removeClass('success').addClass('error');
+                $('.message span').text(e);
+            });
+        })
 
 		$modal.on('hidden.bs.modal', () => {
 			$modal.remove();
@@ -603,75 +622,19 @@ require([
 		$modal.modal('show');
 	});
 
-	let BuildInventoryManager = new SavedSearchManager({
-		id: "build_inventory_ssm",
-		searchname: "Search Inventory - Lookup Gen",
-		preview: true,
-		"dispatch.earliest_time": "0",
-		"dispatch.latest_time": "now",
-		app: "searchplus",
-		autostart: false
-	});
+    function multi_handle_all(input) {
+        input.on("change", (val) => {
+            if (val.length == 0 || (val.length > 1 && val[val.length - 1] == '*')) {
+                input.val('*')
+            } else if (val.length > 1 && val[0] == '*') {
+                input.val(val[1]);
+            }
 
-	$('.sp-settings-rebuild').on('click', function(e) {
-		let $modal = $(`
-		<div class="modal fade" data-backdrop="static">
-			<div class="modal-header">
-				<span class="sp-loader"></span> Rebuilding Search Inventory ...
-			</div>
-		</div>`);
-
-		$modal.on('hidden.bs.modal', () => {
-			$modal.remove();
-		});
-
-		$('body').append($modal);
-		$modal.modal('show');
-
-		BuildInventoryManager.startSearch();
-		BuildInventoryManager.on('search:progress', function(e) {
-			console.log(e);
-		});
-		BuildInventoryManager.on('search:done', function(e) {
-			$modal.modal('hide');
-			SearchListManager.startSearch();
-		});
-		BuildInventoryManager.on('search:failed search:error', function(e) {
-			$('.modal-header').html(`<h3>${icon_alert} Error</h3>`);
-
-			$modal.append(`
-				<div class="modal-body">${e}</div>
-				<div class="modal-footer">
-					<a href="#" data-dismiss="modal" class="btn">Close</a>
-				</div>
-			`);
-		});
-	});
-
-	// ----------------------------------------------
-	// Functions
-	// ----------------------------------------------
-
-	function update_filter_height($container) {
-		$container.css('height', 'auto');
-		let height = $container.prop('scrollHeight');
-		$container.css('height', height + 'px');
+            let $container = $(input.el.closest('.input-container'));
+        });
 	}
 
-	function multi_handle_all(multi) {
-		multi.on("change", (val) => {
-			if (val.length == 0 || (val.length > 1 && val[val.length - 1] == '*')) {
-				multi.val('*')
-			} else if (val.length > 1 && val[0] == '*') {
-				multi.val(val[1]);
-			}
-
-			let $container = $(multi.el.closest('.sp-input-group'));
-			update_filter_height($container);
-		});
-	}
-
-	function create_pagination($container, result_count, current_page) {
+    function create_pagination($container, result_count, current_page) {
 		
 		$container.html('');
 
@@ -682,11 +645,11 @@ require([
 
 		let page_list = get_pagination(7, current_page, page_count);
 
-		if (current_page > 1) $container.append(`<div class="sp-page sp-page-prev sp-clickable">${icon_arrow_left}</div>`);
+		if (current_page > 1) $container.append(`<li class="pagination-page pagination-prev pagination-clickable"><i class="icon icon-arrow-left right-align"></i></li>`);
 		page_list.forEach(function(p) {
-			$page = $(`<div class="sp-page ${(p == current_page) ? 'selected' : ''}">${p}</div>`)
+			$page = $(`<li class="pagination-page ${(p == current_page) ? 'selected' : ''}">${p}</li>`)
 			if (p != '...' && p != current_page) {
-				$page.addClass('sp-clickable');
+                $page.addClass('pagination-clickable');
 				$page.attr('data-attr-page', p);
 				$page.on('click', function() {
 					update_page_offsets(p, count_per_page);
@@ -695,22 +658,29 @@ require([
 			}
 			$page.appendTo($container);	
 		});
-		if (current_page < page_count) $container.append(`<div class="sp-page sp-page-next sp-clickable">${icon_arrow_right}</div>`);
+		if (current_page < page_count) $container.append(`<li class="pagination-page pagination-next pagination-clickable"><i class="icon icon-arrow-right right-align"></i></li>`);
 
-		$('.sp-page-prev', $container).on('click', function() {
+		$('.pagination-prev', $container).on('click', function() {
 			new_page = current_page - 1;
 			update_page_offsets(new_page, count_per_page);
 			create_pagination($container, result_count, new_page);
 		});
 
-		$('.sp-page-next', $container).on('click', function() {
+		$('.pagination-next', $container).on('click', function() {
 			new_page = current_page + 1;
 			update_page_offsets(new_page, count_per_page);
 			create_pagination($container, result_count, new_page);
 		});
 	}
 
-	function get_pagination(count, page, total) {
+    function update_page_offsets(page, count_per_page) {
+		let min_offset = (page - 1) * count_per_page;
+		let max_offset = page * count_per_page;
+		tokens.set("min_offset", min_offset);
+		tokens.set("max_offset", max_offset);
+	}
+
+    function get_pagination(count, page, total) {
 		const start = Math.max (1, Math.min (page - Math.floor ((count - 3) / 2), total - count + 2))
 		const end = Math.min (total, Math.max (page + Math.floor ((count - 2) / 2), count - 1))
 		return [
@@ -726,5 +696,5 @@ require([
 		tokens.set("min_offset", min_offset);
 		tokens.set("max_offset", max_offset);
 	}
-});
 
+});

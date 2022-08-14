@@ -2,8 +2,7 @@ define([
 	'underscore', 
 	'jquery', 
 	'splunkjs/mvc/simplesplunkview', 
-	'/static/app/searchplus/js/format.min.js', 
-	'/static/app/searchplus/js/searchplus_icons.min.js'], 
+	'/static/app/searchplus/js/format.min.js'], 
 	function (_, $, SimpleSplunkView, format) {
 
 	// Define the custom view class
@@ -34,180 +33,181 @@ define([
 		updateView: function (viz, data) {
 			viz.$el.html('');
 			data.forEach(function (row) {
-				var search_url = '/app/' + row.app + '/search?q=' + ((/^\s*\|/.test(row.search)) ? '' : 'search%20') + encodeURIComponent(row.search) + "&earliest=" + (row.earliest || '-24h') + "&latest=" + (row.latest || 'now');
-				var edit_url = '/manager/searchplus/saved/searches?app=' + row.app + '&count=10&offset=0&itemType=&owner=' + row.owner + '&search=%22' + encodeURIComponent(row.title) + '%22';
-				var $markup = $(`
-				<div class="sp-search-row">
-					<div class="sp-search sp-clickable sp-flex-container">
-						<div class="sp-search-col sp-search-dropdown sp-flex-container">${icon_arrow_right}</div>
-						<div class="sp-search-col sp-search-label">${row.title}</div>
-						<div class="sp-search-col sp-search-app">${row.app}</div>
-						<div class="sp-search-col sp-search-owner">${row.owner}</div>
-						<div class="sp-search-col sp-search-updated">${row.updated}</div>
-						<div class="sp-search-col sp-search-updated">${row.next_scheduled_time}</div>
-						<div class="sp-search-col sp-search-updated">${row.sharing}</div>
-						<div class="sp-search-col sp-search-status"><span class="sp-search-status-${row.status}">${row.status}</span></div>
-					</div>
-					<div class="sp-search-details">
-						<div class="sp-search-details-nav sp-flex-container">
-							<div class="sp-nav-item sp-clickable selected" data-attr-section="general">General</div>
-							<div class="sp-nav-item sp-clickable" data-attr-section="attributes">Attributes</div>
-							<div class="sp-nav-item sp-clickable" data-attr-section="statistics">Statistics</div>
-						</div>
-						<div class="sp-nav-section sp-nav-section-general sp-flex-container" data-attr-section="general">
-							<div class="sp-query-container sp-card">
-								<div class="sp-query-overflow">
-									<div class="sp-search-query">${format(row.search, true, true)}</div>
-								</div>
-								<div class="sp-query-controls-container sp-flex-container">
-									<a href="${search_url}" target="_blank" class="sp-query-control sp-query-control-search sp-flex-container">${icon_search}<span>Search</span></a>
-									<a class="sp-query-control sp-query-control-copy sp-flex-container">${icon_copy}<span>Copy</span></a>
-									<a href="${edit_url}" target="_blank" class="sp-query-control sp-query-control-edit sp-flex-container">${icon_edit}<span>Edit</span></a>
-								</div>
-							</div>
-							<div class="sp-search-desc">
-								<div class="sp-search-timing">
-									<span><span class="sp-bold">Timespan:</span><span class="sp-mono"> ${row.earliest || 'N/A'} - ${row.latest || 'N/A'}</span></span>
-									<span><span class="sp-bold">Schedule:</span><span class="sp-mono"> ${row.cron_schedule || 'Not Scheduled'}</span></span>
-								</div>
-								<div class="sp-search-desc-text">
-									<div class="sp-search-desc-value">${row.description || 'No description.'}</div>
-								</div>
-							</div>
-						</div>
-						<div class="sp-nav-section sp-nav-section-attributes sp-flex-container" data-attr-section="attributes" style="display: none;">
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_commands}<span>Commands</span></div>
-								<div class="sp-attribute sp-attribute-1">${viz._makeAttrMarkup(row.command)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_datamodels}<span>Datamodels</span></div>
-								<div class="sp-attribute sp-attribute-2">${viz._makeAttrMarkup(row.datamodel)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_fields}<span>Fields</span></div>
-								<div class="sp-attribute sp-attribute-3">${viz._makeAttrMarkup(row.field)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_functions}<span>Functions</span></div>
-								<div class="sp-attribute sp-attribute-4">${viz._makeAttrMarkup(row.function)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_indexes}<span>Indexes</span></div>
-								<div class="sp-attribute sp-attribute-5">${viz._makeAttrMarkup(row.index)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_lookups}<span>Lookups</span></div>
-								<div class="sp-attribute sp-attribute-6">${viz._makeAttrMarkup(row.lookup)}</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label">${icon_macros}<span>Macros</span></div>
-								<div class="sp-attribute sp-attribute-7">${viz._makeAttrMarkup(row.macro)}</div>
-							</div>
-						</div>
-						<div class="sp-nav-section sp-nav-section-statistics sp-flex-container" data-attr-section="statistics" style="display: none;">
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label"><span>Skipped Percent</span></div>
-								<div class="sp-attribute">${row.skipped == 0 || row.skipped == 'N/A' ? icon_check : row.skipped < 20 ? icon_alert : icon_error} ${row.skipped} %</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label"><span>Average Run Time</span></div>
-								<div class="sp-attribute">${row.run_time < 300 || row.run_time == 'N/A' ? icon_check : row.run_time < 1200 ? icon_alert : icon_error} ${row.run_time} sec</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label"><span>Average Memory Used</span></div>
-								<div class="sp-attribute">${row.mem_used < 1024 || row.mem_used == 'N/A' ? icon_check : row.mem_used < 4096 ? icon_alert : icon_error} ${row.mem_used} kb</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label"><span>Average Events Scanned</span></div>
-								<div class="sp-attribute">${row.scan_count} events</div>
-							</div>
-							<div class="sp-attribute-container">
-								<div class="sp-attribute-label"><span>Average Result Count</span></div>
-								<div class="sp-attribute">${row.result_count} results</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				`);
+                let SKIPPED_DRILLDOWN = `/app/searchplus/search?q=search%20` + encodeURIComponent(`index=_internal sourcetype=scheduler status=skipped savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
+                let RUN_TIME_DRILLDOWN = `/app/searchplus/search?q=search%20` + encodeURIComponent(`index=_internal sourcetype=scheduler run_time=* savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
+                let MEM_USED_DRILLDOWN = `/app/searchplus/search?q=search%20` + encodeURIComponent(`index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user" data.search_props.label="${row.title}" | rename data.search_props.label as savedsearch_name data.mem_used as mem_used`) + `&earliest=-7d&latest=now`;
+                let SCAN_COUNT_DRILLDOWN = `/app/searchplus/search?q=search%20` + encodeURIComponent(`index=_audit sourcetype=audittrail search_id=* action=search savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
+                let RESULT_COUNT_DRILLDOWN = `/app/searchplus/search?q=search%20` + encodeURIComponent(`index=_internal sourcetype=scheduler result_count=* savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
+                let SEARCH_DRILLDOWN = `/app/${row.app}/search?q=${(/^\s*\|/.test(row.search)) ? '' : 'search%20'}${encodeURIComponent(row.search)}&earliest=${row.earliest || '-24h'}&latest=${row.latest || 'now'}`;
+                let EDIT_URL = `/manager/searchplus/saved/searches?app=${row.app}&count=10&offset=0&itemType=&owner=${row.owner}&search=%22${encodeURIComponent(row.title)}%22'`;
+                
+                let $markup = $(`
+                    <li>
+                        <div class="search-header">
+                            <div><i class="icon icon-arrow-right"></i></div>
+                            <div>${row.title}</div>
+                            <div>${row.app}</div>
+                            <div>${row.owner}</div>
+                            <div>${row.updated}</div>
+                            <div>${row.next_scheduled_time}</div>
+                            <div>${row.sharing}</div>
+                            <div><i class="icon icon-${row.status}"></i>${row.status}</div>
+                        </div>
+                        <div class="search-details">
+                            <nav role="tablist">
+                                <a href="#" aria-controls="general" role="tab" class="selected">General</a>
+                                <a href="#" aria-controls="attributes" role="tab">Attributes</a>
+                                <a href="#" aria-controls="statistics" role="tab">Statistics</a>
+                            </nav>
+                            <div class="search-details-content">
+                                <section id="general" role="tabpanel" class="selected">
+                                    <div class="query-container">
+                                        <div class="query-overflow">
+                                            <div class="spl-query">${format(row.search)}</div>
+                                        </div>
+                                        <menu role="list">
+                                            <li><a href="${SEARCH_DRILLDOWN}" target="_blank" class="query-search btn-primary"><i class="icon icon-search"></i>Search</a></li>
+                                            <li><a href="#" class="query-copy btn-primary"><i class="icon icon-copy"></i>Copy</a></li>
+                                        </menu>
+                                    </div>
+                                    <div class="description-container">
+                                        <div class="timing-container">
+                                            <span class="icon-tag" data-attr-tooltip="Timespan"><i class="icon icon-timespan"></i><span>${row.earliest || 'N/A'} - ${row.latest || 'N/A'}</span></span>
+                                            <span class="icon-tag" data-attr-tooltip="Schedule"><i class="icon icon-calendar"></i><span>${row.cron_schedule || 'Not Scheduled'}</span></span>
+                                        </div>
+                                        <h2>Description</h2>
+                                        <p>${row.description || 'No description.'}</p>
+                                    </div>
+                                </section>
+                                <section id="attributes" role="tabpanel" class="hidden">
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-command"></i>Commands</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.command)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-datamodel"></i>Datamodels</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.datamodel)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-field"></i>Fields</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.field)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-function"></i>Function</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.function)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-index"></i>Index</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.index)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-lookup"></i>Lookups</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.lookup)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="attribute-label"><i class="icon icon-macro"></i>Macro</div>
+                                        <div class="attribute-container">${viz._makeAttrMarkup(row.macro)}</div>
+                                    </div>
+                                </section>
+                                <section id="statistics" role="tabpanel" class="hidden">
+                                    <div class="stat-${row.skipped_status || 'green'}">
+                                        <div class="stat-label">Skipped Percent</div>
+                                        <div class="stat-value">${row.skipped || 'N/A'}</div>
+                                        <a class="stat-drilldown" target="_blank" href="${SKIPPED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                    <div class="stat-${row.run_time_status || 'green'}">
+                                        <div class="stat-label">Average Run Time</div>
+                                        <div class="stat-value">${row.run_time || 'N/A'}</div>
+                                        <a class="stat-drilldown" target="_blank" href="${RUN_TIME_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                    <div class="stat-${row.mem_used_status || 'green'}">
+                                        <div class="stat-label">Average Memory Used</div>
+                                        <div class="stat-value">${row.mem_used || 'N/A'}</div>
+                                        <a class="stat-drilldown" target="_blank" href="${MEM_USED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                    <div class="stat-${row.scan_count_status || 'green'}">
+                                        <div class="stat-label">Average Events Scanned</div>
+                                        <div class="stat-value">${row.scan_count || 'N/A'}</div>
+                                        <a class="stat-drilldown" target="_blank" href="${SCAN_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                    <div class="stat-${row.result_count_status || 'green'}">
+                                        <div class="stat-label">Average Result Count</div>
+                                        <div class="stat-value">${row.result_count || 'N/A'}</div>
+                                        <a class="stat-drilldown" target="_blank" href="${RESULT_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </li>
+                `);
 
-				if (row.correlation_search == 'yes') {
-					$('.sp-search-details-nav', $markup).append(`
-						<div class="sp-nav-item sp-clickable" data-attr-section="correlation">Correlation Search</div>
-					`);
+                if (row.correlation_search == 'yes') {
+                    $('.search-details nav', $markup).append(`<a href="#" aria-controls="correlation" role="tab">Correlation Search</a>`);
+                    $('.search-details-content', $markup).append(`
+                        <section id="correlation" role="tabpanel" class="hidden">
+                            <div>
+                                <div class="attribute-label"><i class="icon icon-correlation"></i>Correlation Details</div>
+                                <div class="attribute-container">
+                                    <dl><dt>Security Domain:</dt><dd> ${row.security_domain || 'N/A'}</dd></dl>
+                                    <dl><dt>Severity:</dt><dd> ${row.severity || 'N/A'}</dd></dl>
+                                    <dl><dt>Risk Analysis:</dt><dd> ${row.risk || 'N/A'}</dd></dl>
+                                    <dl><dt>Notable Event:</dt><dd> ${row.notable || 'N/A'}</dd></dl>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="attribute-label"><i class="icon icon-tactic"></i>MITRE ATT&CK Tactic</div>
+                                <div class="attribute-container">${viz._makeAttrMarkup(row.mtr_tactic)}</div>
+                            </div>
+                            <div>
+                                <div class="attribute-label"><i class="icon icon-tactic"></i>MITRE ATT&CK Technique</div>
+                                <div class="attribute-container">${viz._makeAttrMarkup(row.mtr_technique)}</div>
+                            </div>
+                        </section>
+                    `);
+                }
 
-					$('.sp-search-details', $markup).append(`
-					<div class="sp-nav-section sp-nav-section-correlation sp-flex-container" data-attr-section="correlation" style="display: none;">
-						<div class="sp-attribute-container">
-							<dl class="sp-list-dotted"><dt class="sp-bold">Security Domain:</dt><dd> ${row.security_domain || 'N/A'}</dd></dl>
-							<dl class="sp-list-dotted"><dt class="sp-bold">Severity:</dt><dd class="sp-severity sp-severity-${row.severity || 'na'}"> ${row.severity || 'N/A'}</dd></dl>
-							<dl class="sp-list-dotted"><dt class="sp-bold">Risk Analysis:</dt><dd> ${row.risk || 'N/A'}</dd></dl>
-							<dl class="sp-list-dotted"><dt class="sp-bold">Notable Event:</dt><dd> ${row.notable || 'N/A'}</dd></dl>
-						</div>
-						<div class="sp-attribute-container">
-							<div class="sp-attribute-label">${icon_tactics}<span>MITRE ATT&CK Tactics</span></div>
-							<div class="sp-attribute sp-attribute-1">${viz._makeAttrMarkup(row.mtr_tactic)}</div>
-						</div>
-						<div class="sp-attribute-container">
-							<div class="sp-attribute-label">${icon_techniques}<span>MITRE ATT&CK Techniques</span></div>
-							<div class="sp-attribute sp-attribute-2">${viz._makeAttrMarkup(row.mtr_technique)}</div>
-						</div>
-					</div>
-					`);
-				}
-
-				//Events
-				$('.sp-search', $markup).on('click', function () {
+                //Events
+				$('.search-header', $markup).on('click', function () {
 					$parent = $(this).parent();
-					$('.sp-search-row.selected').not($parent).removeClass('selected');
+					$('.search-results li.selected').not($parent).removeClass('selected');
 					$parent.toggleClass('selected');
 				})
 
-				$('.sp-nav-item', $markup).on('click', function () {
+                $('.search-details nav a', $markup).on('click', function () {
 					if ($(this).hasClass('selected')) return;
 
-					let $container = $(this).closest('.sp-search-details');
-					$('.sp-nav-item.selected', $container).removeClass('selected');
+					let $container = $(this).closest('.search-details');
+					$('nav a.selected', $container).removeClass('selected');
 					$(this).addClass('selected');
 
-					let section = $(this).attr('data-attr-section');
-					console.log(section);
-					$('.sp-nav-section', $container).not(`[data-attr-section="${section}"]`).hide();
-					$(`.sp-nav-section[data-attr-section="${section}"]`, $container).show();
-
+					let section = $(this).attr('aria-controls');
+					$('.search-details-content section', $container).not(`#${section}`).removeClass('selected').addClass('hidden');
+					$(`#${section}`, $container).removeClass('hidden').addClass('selected');
 				})
 
-				$('.sp-query-control-copy', $markup).on('click', function() {
-					let search = $('.sp-search-query', $(this).closest('.sp-query-container')).text(); 
-					let $that = $(this);
+                $('.query-copy', $markup).on('click', function() {
+					let search = $('.spl-query', $(this).closest('.query-container')).text(); 
+					let $icon = $('i.icon', $(this));
 					navigator.clipboard.writeText(search).then(function () {
-						$that.addClass('animate-copied').html(`${icon_check} <span>Copy</span>`).delay(1000).queue(function() {
-							$that.removeClass('animate-copied').html(`${icon_copy} <span>Copy</span>`).dequeue();
+						$icon.removeClass('icon-copy').addClass('animate-bounce-in icon-check').delay(1000).queue(function() {
+							$icon.removeClass('animate-bounce-in icon-check').addClass('icon-copy').dequeue();
 						});
-					}, function () {
 					});
 				})
 
-				viz.$el.append($markup);
+                viz.$el.append($markup);
 			});
 		},
 
-		_makeAttrMarkup: function (list, url_prefix=null) {
+        _makeAttrMarkup: function (list) {
 			if (!list) return '';
 			if (!Array.isArray(list)) list = [list];
 			let markup = '';
 
-			if (url_prefix == null) {
-				list.forEach(e => {
-					if (e == 'N/A' || e == '') return;
-					markup += `<span class="sp-tag" title="${e}">${e}</span>`
-				})	
-			} else {
-				list.forEach(e => {
-					if (e == 'N/A' || e == '') return;
-					markup += `<span class="sp-tag" title="${e}">${e}</span>`
-				})	
-			}
+            list.forEach(e => {
+                if (e == 'N/A' || e == '') return;
+                markup += `<span class="tag">${e}</span>`
+            })	
 			return markup;
 		}
 	});

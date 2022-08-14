@@ -67,74 +67,6 @@ svg {
 	vertical-align: middle;
 }
 
-/* Tooltips */
-
-[data-attr-tooltip] {
-	position: relative;
-}
-
-[data-attr-tooltip]::before,
-[data-attr-tooltip]::after {
-    position: absolute;
-	visibility: hidden;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-	opacity: 0;
-	-webkit-transition: 
-		opacity 0.2s ease-in-out,
-        visibility 0.2s ease-in-out,
-        -webkit-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-    -moz-transition:    
-        opacity 0.2s ease-in-out,
-        visibility 0.2s ease-in-out,
-        -moz-transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-    transition:         
-        opacity 0.2s ease-in-out,
-        visibility 0.2s ease-in-out,
-        transform 0.2s cubic-bezier(0.71, 1.7, 0.77, 1.24);
-	-webkit-transform: translate3d(0, 0, 0);
-	-moz-transform: translate3d(0, 0, 0);
-	transform: translate3d(0, 0, 0);
-	pointer-events: none;
-	bottom: 100%;
-	left: 0;
-}
-
-[data-attr-tooltip]:hover::before,
-[data-attr-tooltip]:hover::after,
-[data-attr-tooltip]:focus::before,
-[data-attr-tooltip]:focus::after {
-	visibility: visible;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-	opacity: 1;
-	-webkit-transform: translateY(-12px);
-	-moz-transform: translateY(-12px);
-	transform: translateY(-12px);
-}
-
-[data-attr-tooltip]::before {
-  z-index: 1001;
-  border: 6px solid transparent;
-  background: transparent;
-  content: "";
-  margin-left: 10px;
-  margin-bottom: -12px;
-  border-top-color: #000;
-  border-top-color: hsla(0, 0%, 20%, 0.9);
-}
-
-[data-attr-tooltip]::after {
-  z-index: 1000;
-  padding: 8px;
-  background-color: #171D21;
-  border-radius: 3px;
-  color: #fff;
-  content: attr(data-attr-tooltip);
-  font-family: Splunk Platform Sans,Proxima Nova,Roboto,Droid,Helvetica Neue,Helvetica,Arial,sans-serif;
-  font-size: 13px;
-}
-
 /* Helper Classes */
 
 .sp-bold {
@@ -152,6 +84,12 @@ svg {
 .sp-icon {
 	width: 1rem;
 	height: 1rem;
+}
+
+.sp-card {
+	border-radius: 3px;
+	background: #ffffff;
+	box-shadow: 1px 1px 2px rgb(0 0 0 / 10%);
 }
 
 .sp-flex-container {
@@ -442,12 +380,6 @@ svg {
 	background: var(--color-tag-red);
 }
 
-.sp-card {
-	border-radius: 3px;
-	background: #ffffff;
-	box-shadow: 1px 1px 2px rgb(0 0 0 / 10%);
-}
-
 .sp-query-container {
 	flex-grow: 0;
     flex-basis: 60%;
@@ -486,7 +418,7 @@ svg {
     border-radius: 0 3px 0 3px;
     font-size: var(--font-size-xsm);
 	transform: translateY(-110%);
-	transition: transform .1s ease;
+	transition: transform .2s ease-in-out;
 	color: #fff;
 }
 
@@ -855,7 +787,8 @@ dd.sp-severity-na::before {
 }
 
 .splunk-choice-input-message,
-.sp-input label {
+.sp-input label,
+.fvtivs {
 	display: none !important;
 }
 

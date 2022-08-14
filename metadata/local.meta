@@ -186,7 +186,7 @@ modtime = 1655932144.635951000
 export = none
 owner = admin
 version = 8.2.4
-modtime = 1655916868.479114000
+modtime = 1660430741.983370000
 
 [lookups/sp_mitre_enrichment.csv]
 export = none
@@ -216,3 +216,24 @@ export = none
 owner = admin
 version = 8.2.4
 modtime = 1655932153.400745000
+
+[macros/splus_tracked_fields]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1656441930.009268000
+
+[views/history]
+owner = admin
+version = 8.2.4
+modtime = 1656451087.242187000
+
+[macros/sp_search_decomposition]
+export = none
+owner = admin
+version = 8.2.4
+modtime = 1660443557.812051000
+
+[collections/sp_search_inventory]
+version = 8.2.4
+modtime = 1660451138.012897000
