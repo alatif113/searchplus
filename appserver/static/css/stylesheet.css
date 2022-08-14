@@ -469,6 +469,16 @@ i.icon-disabled::before {
     opacity: 0.5;
 }
 
+.btn-light {
+    color: var(--color-lightgray-900);
+}
+
+.btn-light:hover,
+.btn-light:focus,
+.btn-light:active {
+    color: var(--color-lightgray-500);
+}
+
 .view-container .btn-transparent {
     background-color: transparent;
     padding: 0;
@@ -764,7 +774,13 @@ i.icon-disabled::before {
     display: block;
 }
 
-.search-details nav {
+.nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-container nav {
     display: flex;
 }
 
@@ -787,6 +803,10 @@ i.icon-disabled::before {
 
 .search-details-content section.selected {
     display: grid;
+}
+
+.btn-edit-search {
+    padding-inline: 1rem;
 }
 
 section#general {
@@ -997,12 +1017,6 @@ section#statistics {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    color: var(--color-lightgray-900);
-}
-
-#statistics .stat-drilldown:hover,
-#statistics .stat-drilldown:focus {
-    color: var(--color-lightgray-500);
 }
 
 section#correlation {
