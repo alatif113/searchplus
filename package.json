@@ -4,7 +4,7 @@
   "description": "",
   "main": "searchplus.js",
   "scripts": {
-    "build": "babel appserver/static/js/src -d appserver/static/js; cd appserver/static/js; rm *.min.js > /dev/null; for f in *.js; do short=${f%.js}; terser $short.js --compress --mangle --output $short.min.js; rm $short.js; done;"
+    "build": "cd appserver/static/js; babel src -d .; rm *.min.js > /dev/null; for f in *.js; do short=${f%.js}; terser $short.js --compress --mangle --output $short.min.js; rm $short.js; done; cd ../css; cleancss src/stylesheet.css -o stylesheet.min.css;"
   },
   "repository": {
     "type": "git",
@@ -16,11 +16,11 @@
     "url": "https://github.com/alatif113/searchplus/issues"
   },
   "homepage": "https://github.com/alatif113/searchplus#readme",
-  "dependencies": {},
-	"devDependencies": {
-		"@babel/cli": "^7.15.4",
-		"@babel/core": "^7.15.5",
-		"@babel/preset-env": "^7.15.6",
-		"terser": "^5.8.0"
-	}
+  "devDependencies": {
+    "@babel/cli": "^7.15.4",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "clean-css-cli": "^5.6.1",
+    "terser": "^5.8.0"
+  }
 }
