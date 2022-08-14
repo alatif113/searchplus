@@ -97,11 +97,11 @@ define([
                                         <div class="attribute-container">${viz._makeAttrMarkup(row.field)}</div>
                                     </div>
                                     <div>
-                                        <div class="attribute-label"><i class="icon icon-function"></i>Function</div>
+                                        <div class="attribute-label"><i class="icon icon-function"></i>Functions</div>
                                         <div class="attribute-container">${viz._makeAttrMarkup(row.function)}</div>
                                     </div>
                                     <div>
-                                        <div class="attribute-label"><i class="icon icon-index"></i>Index</div>
+                                        <div class="attribute-label"><i class="icon icon-index"></i>Indexes</div>
                                         <div class="attribute-container">${viz._makeAttrMarkup(row.index)}</div>
                                     </div>
                                     <div>
@@ -109,7 +109,7 @@ define([
                                         <div class="attribute-container">${viz._makeAttrMarkup(row.lookup)}</div>
                                     </div>
                                     <div>
-                                        <div class="attribute-label"><i class="icon icon-macro"></i>Macro</div>
+                                        <div class="attribute-label"><i class="icon icon-macro"></i>Macros</div>
                                         <div class="attribute-container">${viz._makeAttrMarkup(row.macro)}</div>
                                     </div>
                                 </section>
