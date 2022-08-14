@@ -61,7 +61,7 @@ define([
                                     <a href="#" aria-controls="attributes" role="tab">Attributes</a>
                                     <a href="#" aria-controls="statistics" role="tab">Statistics</a>
                                 </nav>
-                                <a href="${EDIT_URL}" class="btn-edit-search btn-light"><i class="icon icon-external"></i>Edit Search</a>
+                                <a target="_blank" href="${EDIT_URL}" class="btn-edit-search btn-light"><i class="icon icon-external"></i>Edit Search</a>
                             </div>
                             <div class="search-details-content">
                                 <section id="general" role="tabpanel" class="selected">
