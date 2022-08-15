@@ -2,7 +2,8 @@ define([
 	'underscore', 
 	'jquery', 
 	'splunkjs/mvc/simplesplunkview', 
-	'/static/app/searchplus/js/format.min.js'], 
+	'/static/app/searchplus/js/format.min.js',
+	'/static/app/searchplus/js/simplebar.min.js'], 
 	function (_, $, SimpleSplunkView, format) {
 
 	// Define the custom view class
@@ -66,7 +67,7 @@ define([
                             <div class="search-details-content">
                                 <section id="general" role="tabpanel" class="selected">
                                     <div class="query-container">
-                                        <div class="query-overflow">
+                                        <div class="query-overflow" data-simplebar>
                                             <div class="spl-query">${format(row.search)}</div>
                                         </div>
                                         <menu role="list">

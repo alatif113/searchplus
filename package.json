@@ -4,7 +4,7 @@
   "description": "",
   "main": "searchplus.js",
   "scripts": {
-    "build": "cd appserver/static/js; babel src -d .; rm *.min.js > /dev/null; for f in *.js; do short=${f%.js}; terser $short.js --compress --mangle --output $short.min.js; rm $short.js; done; cd ../css; cleancss src/stylesheet.css -o stylesheet.min.css;"
+    "build": "cd appserver/static/js; babel src -d .; rm *.min.js > /dev/null; for f in *.js; do short=${f%.js}; terser $short.js --compress --mangle --output $short.min.js; rm $short.js; done; cd ../css; cleancss src/stylesheet.css -o stylesheet.min.css; cleancss src/simplebar.css -o simplebar.min.css;"
   },
   "repository": {
     "type": "git",

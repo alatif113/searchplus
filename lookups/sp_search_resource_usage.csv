@@ -1,10 +1,10 @@
 title,skipped,"run_time","result_count","mem_used_status","result_count_status","run_time_status","scan_count_status","skipped_status"
 "DMC Asset - Build Standalone Asset Table","0.0 %","0 hrs 0 min 0 sec","4 results",green,green,green,green,green
 "Search Inventory - Lookup Gen","0.0 %","0 hrs 4 min 47 sec","1,103 results",green,green,green,green,green
-"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 2 min 9 sec","0 results",green,green,green,green,green
+"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 2 min 2 sec","0 results",green,green,green,green,green
 "Search Resource Usage - Lookup Gen","0.0 %","0 hrs 0 min 1 sec","11 results",green,green,green,green,green
 Test,"0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"assetdb-lookupgen","0.0 %","0 hrs 2 min 14 sec","2,429 results",green,green,green,green,green
+"assetdb-lookupgen","0.0 %","0 hrs 2 min 33 sec","2,429 results",green,green,green,green,green
 "instrumentation.usage.admissionRules.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
 "instrumentation.usage.authMethod.config","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
 "instrumentation.usage.healthMonitor.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green

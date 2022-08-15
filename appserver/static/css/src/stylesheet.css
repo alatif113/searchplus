@@ -662,6 +662,11 @@ i.icon-disabled::before {
     color: var(--color-lightgray-500);
 }
 
+.code {
+    font-family: var(--font-family-mono);
+    font-style: italic;
+}
+
 .view-container > * {
     min-width: 0;
 }
@@ -1095,6 +1100,8 @@ footer {
 .modal section,
 .modal p {
     margin-bottom: 1rem;
+    line-height: initial;
+    margin-top: 0.5rem;
 }
 
 .modal .message {

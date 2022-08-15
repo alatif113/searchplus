@@ -6,11 +6,11 @@ require([
 	"splunkjs/mvc/postprocessmanager",
 	'splunkjs/mvc/simpleform/input/text',
 	'splunkjs/mvc/simpleform/input/multiselect',
-	'splunkjs/mvc/timerangeview',
 	"splunkjs/mvc/dropdownview",
 	'/static/app/searchplus/js/searchplus_view.min.js',
-	'/static/app/searchplus/js/format.min.js'
-], function($, mvc, SearchManager, SavedSearchManager, PostProcessManager, TextInput, MultiSelectInput, TimeRangeView, DropdownView, SearchPlusView, format) {
+	'/static/app/searchplus/js/format.min.js',
+	'/static/app/searchplus/js/simplebar.min.js'
+], function($, mvc, SearchManager, SavedSearchManager, PostProcessManager, TextInput, MultiSelectInput, DropdownView, SearchPlusView, format) {
 
     let PAGINATION_CURRENT_PAGE = 1;
     let PAGINATION_COUNT_PER_PAGE = 100;
@@ -43,7 +43,7 @@ require([
                     <i class="icon icon-filter"></i><span class="result-count">0</span><span> Matched Searches</span>
                     <button class="btn-more btn-transparent"><i class="icon icon-more right-align"></i></button>
                 </header>
-                <div class="sidebar-content">
+                <div class="sidebar-content" data-simplebar>
                     <section aria-label="General Filters" class="input-group">
                         <header class="input-group-label">
                             <h1>General Filters</h1>
@@ -147,7 +147,7 @@ require([
                     <div><i class="icon icon-share"></i>Sharing</div>
                     <div><i class="icon icon-toggle"></i>Status</div>
                 </header>
-                <ol role="none" class="search-results">
+                <ol role="none" class="search-results" data-simplebar>
                 </ol>
                 <ul class="pagination" role="list"></ul>
             </section>
@@ -553,9 +553,9 @@ require([
                 <div class="modal-body">
                     <section class="">
                         <h2>Filtered Search Query</h2>
-                        <p>The currently filtered search list can be derived using this query:</p>
+                        <p>The filtered search list is generated using this query.</p>
                         <div class="query-container">    
-                            <div class="query-overflow">
+                            <div class="query-overflow" data-simplebar>
                                 <div class="spl-query">${format(query)}</div>
                             </div>
                             <menu role="list">
@@ -566,7 +566,7 @@ require([
                     </section>
                     <section>
                         <h2>Rebuild Search Inventory</h2>
-                        <p>Run the lookup generation search to re-populate the search_inventory lookup. This automatically happens once a day by default.</p>
+                        <p>Run the <span class="code">Search Inventory - Lookup Gen</span> lookup generation search to re-populate the <span class="code">search_inventory</span> lookup. This automatically occurs once a day by default.</p>
                         <button class="btn-primary btn-rebuild"><i class="icon icon-refresh"></i>Rebuild</button><span class="message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
                     </section>
                 </div>
