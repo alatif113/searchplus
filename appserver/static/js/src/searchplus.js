@@ -147,8 +147,10 @@ require([
                     <div><i class="icon icon-share"></i>Sharing</div>
                     <div><i class="icon icon-toggle"></i>Status</div>
                 </header>
-                <ol role="none" class="search-results" data-simplebar>
-                </ol>
+				<div class="scroll-container" data-simplebar>
+					<ol class="search-results">
+					</ol>
+				</div>
                 <ul class="pagination" role="list"></ul>
             </section>
         </div>
@@ -202,6 +204,8 @@ require([
 		managerid: "sm_pagination",
 		el: $('.dashboard-body .search-results')
 	}).render();
+
+	//new SimpleBar($('.dashboard-body .search-results')[0]);
 
     // #############################################
 	// Inputs

@@ -701,7 +701,6 @@ i.icon-disabled::before {
 .sidebar-content {
     padding: 1rem;
     height: calc(100vh - 122px);;
-    overflow-y: scroll;
 }
 
 .input-group-label {
@@ -782,9 +781,8 @@ i.icon-disabled::before {
     padding: 0;
 }
 
-.search-results {
-    height: calc(100vh - 122px);;
-    overflow-y: scroll;
+.content .scroll-container {
+    height: calc(100vh - 122px);
     padding-bottom: 5rem;
 }
 
@@ -865,7 +863,6 @@ section#general {
     padding: 1rem;
     background-color: var(--color-darkgray-600);
     max-height: 400px;
-    overflow-y: scroll;
 }
 
 .spl-query {

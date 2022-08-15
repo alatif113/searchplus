@@ -3,7 +3,7 @@ define([
 	'jquery', 
 	'splunkjs/mvc/simplesplunkview', 
 	'/static/app/searchplus/js/format.min.js',
-	'/static/app/searchplus/js/simplebar.min.js'], 
+    '/static/app/searchplus/js/simplebar.min.js'], 
 	function (_, $, SimpleSplunkView, format) {
 
 	// Define the custom view class
