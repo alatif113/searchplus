@@ -566,7 +566,7 @@ require([
                     </section>
                     <section>
                         <h2>Rebuild Search Inventory</h2>
-                        <p>Run the <span class="code">Search Inventory - Lookup Gen</span> lookup generation search to re-populate the <span class="code">search_inventory</span> lookup. This automatically occurs once a day by default.</p>
+                        <p>Run the <span class="code">Search Inventory - Lookup Gen</span> lookup generation search to re-populate the <span class="code">search_inventory</span> KV store. This automatically occurs once a day by default.</p>
                         <button class="btn-primary btn-rebuild"><i class="icon icon-refresh"></i>Rebuild</button><span class="message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
                     </section>
                 </div>
