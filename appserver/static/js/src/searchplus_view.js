@@ -41,8 +41,10 @@ define([
                 let SCAN_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_audit sourcetype=audittrail search_id=* action=search savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
                 let RESULT_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler result_count=* savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
                 let SEARCH_DRILLDOWN = `/app/${row.app}/search?q=${(/^\s*\|/.test(row.search)) ? '' : 'search%20'}${encodeURIComponent(row.search)}&earliest=${row.earliest || '-24h'}&latest=${row.latest || 'now'}`;
-                let EDIT_URL = `/manager/searchplus/saved/searches?app=${row.app}&count=10&offset=0&itemType=&owner=${row.owner}&search=%22${encodeURIComponent(row.title)}%22`;
-                
+                let SAVED_SEARCH_EDIT_URL = `/manager/searchplus/saved/searches?app=${row.app}&count=10&offset=0&itemType=&owner=${row.owner}&search=%22${encodeURIComponent(row.title)}%22`;
+                let CORRELATION_SEARCH_EDIT_URL = `/app/SplunkEnterpriseSecuritySuite/correlation_search_edit?search=${encodeURIComponent(row.title)}`;
+		let EDIT_URL = row.correlation_search == yes ? CORRELATION_SEARCH_EDIT_URL : SAVED_SEARCH_EDIT_URL;
+				
                 let $markup = $(`
                     <li>
                         <div class="search-header">
