@@ -120,27 +120,27 @@ define([
                                     <div class="stat-${row.skipped_status || 'green'}">
                                         <div class="stat-label">Skipped Percent</div>
                                         <div class="stat-value">${row.skipped || 'N/A'}</div>
-                                        <a class="stat-drilldown btn-light" target="_blank" href="${SKIPPED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${SKIPPED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                     <div class="stat-${row.run_time_status || 'green'}">
                                         <div class="stat-label">Average Run Time</div>
                                         <div class="stat-value">${row.run_time || 'N/A'}</div>
-                                        <a class="stat-drilldown btn-light" target="_blank" href="${RUN_TIME_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${RUN_TIME_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                     <div class="stat-${row.mem_used_status || 'green'}">
                                         <div class="stat-label">Average Memory Used</div>
                                         <div class="stat-value">${row.mem_used || 'N/A'}</div>
-                                        <a class="stat-drilldown btn-light" target="_blank" href="${MEM_USED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${MEM_USED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                     <div class="stat-${row.scan_count_status || 'green'}">
                                         <div class="stat-label">Average Events Scanned</div>
                                         <div class="stat-value">${row.scan_count || 'N/A'}</div>
-                                        <a class="stat-drilldown btn-light" target="_blank" href="${SCAN_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${SCAN_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                     <div class="stat-${row.result_count_status || 'green'}">
                                         <div class="stat-label">Average Result Count</div>
                                         <div class="stat-value">${row.result_count || 'N/A'}</div>
-                                        <a class="stat-drilldown btn-light" target="_blank" href="${RESULT_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${RESULT_COUNT_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                 </section>
                             </div>
