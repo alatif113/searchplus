@@ -1,13 +1,13 @@
 title,skipped,"run_time","result_count","mem_used_status","result_count_status","run_time_status","scan_count_status","skipped_status"
 "DMC Asset - Build Standalone Asset Table","0.0 %","0 hrs 0 min 0 sec","4 results",green,green,green,green,green
-"Search Inventory - Lookup Gen","0.0 %","0 hrs 12 min 17 sec","1,102 results",green,green,amber,green,green
-"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 1 min 50 sec","0 results",green,green,green,green,green
+"Search Inventory - Lookup Gen","0.0 %","0 hrs 14 min 12 sec","1,102 results",green,green,amber,green,green
+"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 2 min 18 sec","0 results",green,green,green,green,green
 "Search Resource Usage - Lookup Gen","0.0 %","0 hrs 0 min 1 sec","12 results",green,green,green,green,green
 Test,"0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"assetdb-lookupgen","0.0 %","0 hrs 2 min 27 sec","1,041 results",green,green,green,green,green
+"assetdb-lookupgen","0.0 %","0 hrs 0 min 2 sec","756 results",green,green,green,green,green
 "instrumentation.usage.admissionRules.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
 "instrumentation.usage.authMethod.config","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
 "instrumentation.usage.healthMonitor.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
 "instrumentation.usage.passwordPolicy.config","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"instrumentation.usage.smartStore.config","0.0 %","0 hrs 16 min 25 sec","1 results",green,green,amber,green,green
+"instrumentation.usage.smartStore.config","0.0 %","0 hrs 0 min 1 sec","1 results",green,green,green,green,green
 "instrumentation.usage.workloadManagement.report","0.0 %","0 hrs 0 min 0 sec","2 results",green,green,green,green,green
