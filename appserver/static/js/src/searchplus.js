@@ -27,7 +27,6 @@ require([
         | fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
         | search correlation_search=$correlation$ security_domain IN ($securitydomain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
         | join type=left title [| inputlookup sp_search_resource_usage.csv]
-        | fillnull skipped run_time result_count mem_used scan_count value="N/A"
         | sort $sort$`;
 	let PAGINATION_SM_QUERY = `| streamstats count
 		| search count > $min_offset$  count <= $max_offset$`;
@@ -196,6 +195,13 @@ require([
 		autostart: false
 	});
 
+	let ResourceSM = new SavedSearchManager({
+		id: "sm_resource",
+		searchname: "Search Resource Usage - Lookup Gen",
+		app: "searchplus",
+		autostart: false
+	});
+
     // #############################################
 	// Views
 	// #############################################
@@ -210,6 +216,7 @@ require([
     // #############################################
 	// Inputs
 	// #############################################
+	let input_list = [];
 
     // Updated Input
     let UpdatedInput = new DropdownView({
@@ -228,6 +235,8 @@ require([
 		value: "$updated$",
         el: $('.input-updated')
     }, {tokens: true}).render();
+
+	input_list.push(UpdatedInput);
 
     // Sort Input
     let SortInput = new DropdownView({
@@ -251,6 +260,8 @@ require([
         el: $('.input-sort')
     }, {tokens: true}).render();
 
+	input_list.push(SortInput);
+
     // Keyword Input
     let KeywordInput = new TextInput({
 		id: "input_keyword",
@@ -258,6 +269,8 @@ require([
 		value: "$keyword$",
 		el: $('.input-keyword')
 	}, {tokens: true}).render();
+
+	input_list.push(KeywordInput);
 
     // App Input
     new PostProcessManager({
@@ -277,6 +290,7 @@ require([
 		el: $('.input-app')
 	}, {tokens: true}).render();
 
+	input_list.push(AppInput);
     multi_handle_all(AppInput);
 
     // Owner Input
@@ -297,6 +311,7 @@ require([
 		el: $('.input-owner')
 	}, {tokens: true}).render();
 
+	input_list.push(OwnerInput);
     multi_handle_all(OwnerInput);
 
     // Status Input
@@ -307,6 +322,8 @@ require([
 		value: "$status$",
         el: $('.input-status')
 	}, {tokens: true}).render();
+
+	input_list.push(StatusInput);
 
     // Command Input
     new PostProcessManager({
@@ -326,6 +343,7 @@ require([
 		el: $('.input-command')
 	}, {tokens: true}).render();
 
+	input_list.push(CommandInput);
     multi_handle_all(CommandInput);
 
     // Datamodel Input
@@ -346,6 +364,7 @@ require([
 		el: $('.input-datamodel')
 	}, {tokens: true}).render();
 
+	input_list.push(DataModelInput);
     multi_handle_all(DataModelInput);
 
     // Field Input
@@ -358,6 +377,7 @@ require([
 		el: $('.input-field')
 	}, {tokens: true}).render();
 
+	input_list.push(FieldInput);
     multi_handle_all(FieldInput);
 
     // Function Input
@@ -378,6 +398,7 @@ require([
 		el: $('.input-function')
 	}, {tokens: true}).render();
 
+	input_list.push(FunctionInput);
     multi_handle_all(FunctionInput);
 
     // Index Input
@@ -398,6 +419,7 @@ require([
 		el: $('.input-index')
 	}, {tokens: true}).render();
 
+	input_list.push(IndexInput);
     multi_handle_all(IndexInput);
 
     // Lookup Input
@@ -418,6 +440,7 @@ require([
 		el: $('.input-lookup')
 	}, {tokens: true}).render();
 
+	input_list.push(LookupInput);
     multi_handle_all(LookupInput);
 
     // Macro Input
@@ -438,6 +461,7 @@ require([
 		el: $('.input-macro')
 	}, {tokens: true}).render();
 
+	input_list.push(MacroInput);
     multi_handle_all(MacroInput);
 
 
@@ -459,6 +483,7 @@ require([
 		el: $('.input-severity')
 	}, {tokens: true}).render();
 
+	input_list.push(SeverityInput);
     multi_handle_all(SeverityInput);
 
 	// Security Domain Input
@@ -479,6 +504,7 @@ require([
 		el: $('.input-securitydomain')
 	}, {tokens: true}).render();
 
+	input_list.push(SecurityDomainInput);
     multi_handle_all(SecurityDomainInput);
 
 	// Tactic Input
@@ -499,6 +525,7 @@ require([
 		el: $('.input-tactic')
 	}, {tokens: true}).render();
 
+	input_list.push(TacticInput);
     multi_handle_all(TacticInput);
 
 
@@ -520,6 +547,7 @@ require([
 		el: $('.input-technique')
 	}, {tokens: true}).render();
   
+	input_list.push(TechniqueInput);
     multi_handle_all(TechniqueInput);
 
     // #############################################
@@ -567,11 +595,26 @@ require([
                                 <li><a href="#" class="query-copy btn-primary"><i class="icon icon-copy"></i>Copy</a></li>
                             </menu>
                         </div>
+						<p>The filtered search list can be accessed using this link.</p>
+						<div class="query-container">    
+                            <div class="query-overflow" data-simplebar>
+                                <div class="spl-query">${get_filter_link(true)}</div>
+                            </div>
+                            <menu role="list">
+                                <li><a href="${get_filter_link()}" target="_blank" class="btn-primary"><i class="icon icon-external"></i>Open</a></li>
+                                <li><a href="#" class="query-copy btn-primary"><i class="icon icon-copy"></i>Copy</a></li>
+                            </menu>
+                        </div>
                     </section>
                     <section>
                         <h2>Rebuild Search Inventory</h2>
                         <p>Run the <span class="code">Search Inventory - Lookup Gen</span> lookup generation search to re-populate the <span class="code">search_inventory</span> KV store. This automatically occurs once a day by default.</p>
-                        <button class="btn-primary btn-rebuild"><i class="icon icon-refresh"></i>Rebuild</button><span class="message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
+                        <button class="btn-primary btn-rebuild"><i class="icon icon-refresh"></i>Rebuild Search Inventory</button><span class="rebuild-message message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
+                    </section>
+					<section>
+                        <h2>Rebuild Resource Usage Lookup</h2>
+                        <p>Run the <span class="code">Search Resource Usage - Lookup Gen</span> lookup generation search to re-populate the <span class="code">sp_search_resource_usage.csv</span> lookup table. This automatically occurs once a day by default.</p>
+                        <button class="btn-primary btn-resource"><i class="icon icon-refresh"></i>Rebuild Resource Usage</button><span class="resource-message message"><i class="icon icon-refresh animate-rotate"></i><span> Rebuilding...</span></span>
                     </section>
                 </div>
                 <div class="modal-footer">
@@ -592,7 +635,7 @@ require([
             $('.btn-rebuild').addClass('disabled');
             $('.close', $modal).addClass('disabled');
             $('.modal-backdrop').addClass('disabled');
-            $('.message', $modal).show();
+            $('.rebuild-message', $modal).show();
             
             let $section = $(this).closest('section');
             
@@ -606,17 +649,47 @@ require([
 
             RebuildSM.on('search:done', function(e) {
                 ContentSM.startSearch();
-                $('.message i.icon', $modal).removeClass().addClass('icon icon-check');
-                $('.message').removeClass('error').addClass('success');
-                $('.message span').text('Complete!');
+                $('.rebuild-message i.icon', $modal).removeClass().addClass('icon icon-check');
+                $('.rebuild-message').removeClass('error').addClass('success');
+                $('.rebuild-message span').text('Complete!');
             });
 
             RebuildSM.on('search:failed search:error', function(e) {    
-                $('.message i.icon', $modal).removeClass().addClass('icon icon-error');
-                $('.message').removeClass('success').addClass('error');
-                $('.message span').text(e);
+                $('.rebuild-message i.icon', $modal).removeClass().addClass('icon icon-error');
+                $('.rebuild-message').removeClass('success').addClass('error');
+                $('.rebuild-message span').text(e);
             });
-        })
+        });
+
+		$('.btn-resource', $modal).on('click', function() {
+            $('.btn-resource').addClass('disabled');
+            $('.close', $modal).addClass('disabled');
+            $('.modal-backdrop').addClass('disabled');
+            $('.resource-message', $modal).show();
+            
+            let $section = $(this).closest('section');
+            
+            ResourceSM.startSearch();
+
+            ResourceSM.on('search:done search:failed search:error search:canceled', function(e) {
+                $('.btn-resource').removeClass('disabled');
+                $('.close', $modal).removeClass('disabled');
+                $('.modal-backdrop').removeClass('disabled');
+            });
+
+            ResourceSM.on('search:done', function(e) {
+                ContentSM.startSearch();
+                $('.resource-message i.icon', $modal).removeClass().addClass('icon icon-check');
+                $('.resource-message').removeClass('error').addClass('success');
+                $('.resource-message span').text('Complete!');
+            });
+
+            ResourceSM.on('search:failed search:error', function(e) {    
+                $('.resource-message i.icon', $modal).removeClass().addClass('icon icon-error');
+                $('.resource-message').removeClass('success').addClass('error');
+                $('.resource-message span').text(e);
+            });
+        });
 
 		$modal.on('hidden.bs.modal', () => {
 			$modal.remove();
@@ -699,6 +772,32 @@ require([
 		let max_offset = page * count_per_page;
 		tokens.set("min_offset", min_offset);
 		tokens.set("max_offset", max_offset);
+	}
+
+	function get_filter_link(escaped = false) {
+		let url = window.location.origin + window.location.pathname + '?'
+		let params = [];
+		for (input of input_list) {
+			let default_val = input.options.default;
+			let current_val = input.val();
+
+			if (default_val != current_val) {
+				let key = input.options.value.replace(/\$/g, '');
+				if (Array.isArray(current_val)) {
+					for (val of current_val) {
+						params.push(`${key}=${encodeURIComponent(val)}`)
+					}
+				} else {
+					params.push(`${key}=${encodeURIComponent(current_val)}`)
+				}
+			}
+		}
+		if (escaped) {
+			url += params.join('&amp;');
+		} else {
+			url += params.join('&');
+		}
+		return url
 	}
 
 });

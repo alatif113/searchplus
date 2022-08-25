@@ -871,6 +871,7 @@ section#general {
 	font-family: "Splunk Platform Mono", Inconsolata, Consolas, "Droid Sans Mono", Monaco, "Courier New", Courier, monospace;
     border-collapse: collapse;
 	border-spacing: 0;
+    word-break: break-word;
 }
 
 .spl-row {
@@ -1094,11 +1095,15 @@ footer {
     background-color: var(--color-darkgray-900);
 }
 
-.modal section,
 .modal p {
-    margin-bottom: 1rem;
+    margin-block: 1rem;
     line-height: initial;
-    margin-top: 0.5rem;
+}
+
+.modal section {
+    padding-block: 1rem;
+    line-height: initial;
+    border-top: 1px solid var(--color-darkgray-500);
 }
 
 .modal .message {
@@ -1106,7 +1111,7 @@ footer {
     display: none;;
 }
 
-.modal .message.error {
+.modal .error {
     color: var(--color-red-500);
 }
 
