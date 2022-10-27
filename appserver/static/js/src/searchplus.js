@@ -7,7 +7,7 @@ require([
 	'splunkjs/mvc/simpleform/input/text',
 	'splunkjs/mvc/simpleform/input/multiselect',
 	"splunkjs/mvc/dropdownview",
-	'/static/app/searchplus/js/searchplus_view.min.js',
+	'/static/app/searchplus/js/sp_view.min.js',
 	'/static/app/searchplus/js/format.min.js',
 	'/static/app/searchplus/js/simplebar.min.js'
 ], function($, mvc, SearchManager, SavedSearchManager, PostProcessManager, TextInput, MultiSelectInput, DropdownView, SearchPlusView, format) {
@@ -27,7 +27,7 @@ require([
         | fillnull command datamodel field index macro lookup function mtr_tactic mtr_technique security_domain severity value="N/A"
         | search correlation_search=$correlation$ security_domain IN ($securitydomain$) severity IN ($severity$) field IN ($field$) app IN ($app$) owner IN ($owner$) command IN ($command$) datamodel IN ($datamodel$) index IN ($index$) macro IN ($macro$) lookup IN ($lookup$) function IN ($function$) mtr_tactic IN ($tactic$) mtr_technique IN ($technique$)
         | join type=left title [| inputlookup sp_search_resource_usage.csv]
-        | sort $sort$`;
+        | sort $sortorder$$sort$`;
 	let PAGINATION_SM_QUERY = `| streamstats count
 		| search count > $min_offset$  count <= $max_offset$`;
 
@@ -51,6 +51,10 @@ require([
                         <div class="input-container">
                             <label><i class="icon icon-sort"></i>Sort By</label>
                             <div class="splunk-input-container input-sort"></div>
+                        </div>
+						<div class="input-container">
+                            <label><i class="icon icon-sort"></i>Sort Order</label>
+                            <div class="splunk-input-container input-sortorder"></div>
                         </div>
                         <div class="input-container">
                             <label><i class="icon icon-clock"></i>Last Updated</label>
@@ -245,15 +249,15 @@ require([
 			{label: "Title", value: "title"}, 
 			{label: "App", value: "app"}, 
 			{label: "Owner", value: "owner"}, 
-			{label: "Updated", value: "-updated"}, 
-			{label: "Next Scheduled Time", value: "-next_scheduled_time"}, 
+			{label: "Updated", value: "updated"}, 
+			{label: "Next Scheduled Time", value: "next_scheduled_time"}, 
 			{label: "Sharing", value: "sharing"}, 
 			{label: "Status", value: "status"}, 
-			{label: "Skipped Percentage", value: "-skipped"},
-			{label: "Avg. Memory Used", value: "-mem_used"},
-			{label: "Avg. Run Time", value: "-run_time"},
-			{label: "Avg. Events Scanned", value: "-scan_count"},
-			{label: "Avg. Result Count", value: "-result_count"}
+			{label: "Skipped Percentage", value: "skipped"},
+			{label: "Avg. Memory Used", value: "mem_used"},
+			{label: "Avg. Run Time", value: "run_time"},
+			{label: "Avg. Events Scanned", value: "scan_count"},
+			{label: "Avg. Result Count", value: "result_count"}
 		],
         default: "title",
 		value: "$sort$",
@@ -261,6 +265,20 @@ require([
     }, {tokens: true}).render();
 
 	input_list.push(SortInput);
+
+	// Sort Input
+    let SortOrderInput = new DropdownView({
+		id: "input_sortorder",
+		choices: [
+			{label: "Ascending", value: "+"}, 
+			{label: "Descending", value: "-"}, 
+		],
+        default: "+",
+		value: "$sortorder$",
+        el: $('.input-sortorder')
+    }, {tokens: true}).render();
+
+	input_list.push(SortOrderInput);
 
     // Keyword Input
     let KeywordInput = new TextInput({
@@ -635,6 +653,9 @@ require([
             $('.btn-rebuild').addClass('disabled');
             $('.close', $modal).addClass('disabled');
             $('.modal-backdrop').addClass('disabled');
+			$('.rebuild-message i.icon', $modal).removeClass().addClass('icon icon-refresh animate-rotate');
+            $('.rebuild-message').removeClass('error').removeClass('success');
+			$('.rebuild-message span').text('Rebuilding...');
             $('.rebuild-message', $modal).show();
             
             let $section = $(this).closest('section');
@@ -665,6 +686,9 @@ require([
             $('.btn-resource').addClass('disabled');
             $('.close', $modal).addClass('disabled');
             $('.modal-backdrop').addClass('disabled');
+			$('.resource-message i.icon', $modal).removeClass().addClass('icon icon-refresh animate-rotate');
+            $('.resource-message').removeClass('error').removeClass('success');
+			$('.resource-message span').text('Rebuilding...');
             $('.resource-message', $modal).show();
             
             let $section = $(this).closest('section');

@@ -35,11 +35,13 @@ define([
 			viz.$el.html('');
 			data.forEach(function (row) {
                 let SEARCH_PREFIX = '/app/searchplus/search?q=search%20';
-                let SKIPPED_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler status=skipped savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
-                let RUN_TIME_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler run_time=* savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
-                let MEM_USED_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user" data.search_props.label="${row.title}" | rename data.search_props.label as savedsearch_name data.mem_used as mem_used`) + `&earliest=-7d&latest=now`;
-                let SCAN_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_audit sourcetype=audittrail search_id=* action=search savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
-                let RESULT_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler result_count=* savedsearch_name="${row.title}"`) + `&earliest=-7d&latest=now`;
+                let SEARCH_SUFFIX = '&earliest=-7d&latest=now&&display.page.search.tab=visualizations&display.general.type=visualizations';
+                let LATENCY_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler savedsearch_name="${row.title}" | eval latency=(dispatch_time-scheduled_time)/60 | timechart span=1h avg(latency) as latency`) + SEARCH_SUFFIX;
+                let SKIPPED_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler savedsearch_name="${row.title}" | timechart span=1h count(eval(status="skipped")) as skipped count as total | eval skipped=(skipped / total) * 100 | table _time skipped`) + SEARCH_SUFFIX;
+                let RUN_TIME_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler run_time=* savedsearch_name="${row.title}" | eval run_time=run_time/60 | timechart span=1h avg(run_time) as run_time`) + SEARCH_SUFFIX;
+                let MEM_USED_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_introspection sourcetype=splunk_resource_usage data.search_props.sid::* data.search_props.mode!=RT data.search_props.user!="splunk-system-user" data.search_props.label="${row.title}" | rename data.mem_used as mem_used | timechart span=1h avg(mem_used) as mem_used`) + SEARCH_SUFFIX;
+                let SCAN_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_audit sourcetype=audittrail search_id=* action=search savedsearch_name="${row.title}" | timechart span=1h avg(scan_count) as scan_count`) + SEARCH_SUFFIX;
+                let RESULT_COUNT_DRILLDOWN = SEARCH_PREFIX + encodeURIComponent(`index=_internal sourcetype=scheduler result_count=* savedsearch_name="${row.title}" | timechart span=1h avg(result_count) as result_count`) + SEARCH_SUFFIX;
                 let SEARCH_DRILLDOWN = `/app/${row.app}/search?q=${(/^\s*\|/.test(row.search)) ? '' : 'search%20'}${encodeURIComponent(row.search)}&earliest=${row.earliest || '-24h'}&latest=${row.latest || 'now'}`;
                 let SAVED_SEARCH_EDIT_URL = `/manager/searchplus/saved/searches?app=${row.app}&count=10&offset=0&itemType=&owner=${row.owner}&search=%22${encodeURIComponent(row.title)}%22`;
                 let CORRELATION_SEARCH_EDIT_URL = `/app/SplunkEnterpriseSecuritySuite/correlation_search_edit?search=${encodeURIComponent(row.title)}`;
@@ -121,6 +123,11 @@ define([
                                         <div class="stat-label">Skipped Percent</div>
                                         <div class="stat-value">${row.skipped || 'N/A'}</div>
                                         <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${SKIPPED_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
+                                    </div>
+                                    <div class="stat-${row.latency_status || 'green'}">
+                                        <div class="stat-label">Average Search Delay</div>
+                                        <div class="stat-value">${row.latency || 'N/A'}</div>
+                                        <a class="stat-drilldown btn-light" target="_blank" data-attr-tooltip="Open in Search" href="${LATENCY_DRILLDOWN}"><i class="icon icon-external right-align"></i></a>
                                     </div>
                                     <div class="stat-${row.run_time_status || 'green'}">
                                         <div class="stat-label">Average Run Time</div>

@@ -1,13 +1,12 @@
-title,skipped,"run_time","result_count","mem_used_status","result_count_status","run_time_status","scan_count_status","skipped_status"
-"DMC Asset - Build Standalone Asset Table","0.0 %","0 hrs 0 min 0 sec","4 results",green,green,green,green,green
-"Search Inventory - Lookup Gen","0.0 %","0 hrs 14 min 12 sec","1,102 results",green,green,amber,green,green
-"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 2 min 11 sec","0 results",green,green,green,green,green
-"Search Resource Usage - Lookup Gen","0.0 %","0 hrs 0 min 1 sec","12 results",green,green,green,green,green
-Test,"0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"assetdb-lookupgen","0.0 %","0 hrs 0 min 1 sec","817 results",green,green,green,green,green
-"instrumentation.usage.admissionRules.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"instrumentation.usage.authMethod.config","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"instrumentation.usage.healthMonitor.report","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"instrumentation.usage.passwordPolicy.config","0.0 %","0 hrs 0 min 0 sec","1 results",green,green,green,green,green
-"instrumentation.usage.smartStore.config","0.0 %","0 hrs 0 min 1 sec","1 results",green,green,green,green,green
-"instrumentation.usage.workloadManagement.report","0.0 %","0 hrs 0 min 0 sec","2 results",green,green,green,green,green
+title,skipped,"run_time","result_count",latency,"latency_status","mem_used_status","result_count_status","run_time_status","scan_count_status","skipped_status"
+"Search Inventory - Lookup Gen","0.0 %","0 hrs 9 min 14 sec","1,114","0 hrs 28 min 20 sec",red,green,green,amber,green,green
+"Search Inventory Iterative - Lookup Gen","0.0 %","0 hrs 1 min 0 sec",1,"0 hrs 14 min 44 sec",amber,green,green,green,green,green
+"Search Resource Usage - Lookup Gen","0.0 %","0 hrs 0 min 1 sec",11,"0 hrs 34 min 30 sec",red,green,green,green,green,green
+Test,"0.0 %","0 hrs 0 min 0 sec",1,"0 hrs 30 min 13 sec",red,green,green,green,green,green
+"assetdb-lookupgen","0.0 %",,,,green,green,green,green,green,green
+"instrumentation.usage.admissionRules.report","0.0 %","0 hrs 0 min 1 sec",1,"0 hrs 10 min 46 sec",amber,green,green,green,green,green
+"instrumentation.usage.authMethod.config","0.0 %","0 hrs 0 min 0 sec",1,"0 hrs 10 min 46 sec",amber,green,green,green,green,green
+"instrumentation.usage.healthMonitor.report","0.0 %","0 hrs 0 min 0 sec",1,"0 hrs 10 min 46 sec",amber,green,green,green,green,green
+"instrumentation.usage.passwordPolicy.config","0.0 %","0 hrs 0 min 0 sec",1,"0 hrs 10 min 46 sec",amber,green,green,green,green,green
+"instrumentation.usage.smartStore.config","0.0 %","0 hrs 0 min 1 sec",1,"0 hrs 10 min 46 sec",amber,green,green,green,green,green
+"instrumentation.usage.workloadManagement.report","0.0 %","0 hrs 0 min 1 sec",2,"0 hrs 10 min 46 sec",amber,green,green,green,green,green

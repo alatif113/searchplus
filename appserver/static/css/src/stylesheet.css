@@ -882,7 +882,7 @@ section#general {
 
 .spl-gutter {
 	display: table-cell;
-    width: 10px;
+    width: 2em;
 	padding-right: .5em;
 	text-align: right;
 	-webkit-touch-callout: none;
@@ -1157,7 +1157,32 @@ footer {
     font-size: var(--font-size-300) !important;
 }
 
-[data-view="splunkjs/mvc/textinputview"] input,
+[data-test="results-menu"] {
+    background-color: var(--color-bluegray-800) !important;
+}
+
+[data-test="results-menu"] button[data-test="option"][id],
+[data-test="menu"] button[data-test="option"][id] {
+    background-color: var(--color-bluegray-800) !important;
+}
+
+[data-test="text"] > span,
+[data-test="text"] > span:focus-within {
+    box-shadow: none !important;
+    background-color: var(--color-bluegray-800) !important;
+    border: 1px solid var(--color-bluegray-700) !important;
+}
+
+[data-test="text"] > input {
+    color: var(--color-lightgray-100) !important;
+}
+
+[data-view="splunkjs/mvc/textinputview"] input {
+    background-color: var(--color-bluegray-800) !important;
+	color: var(--color-lightgray-100) !important;
+}
+
+[data-component="splunk-core:/splunkjs/mvc/components/TextInput"] > span,
 [data-component="splunk-core:/splunkjs/mvc/components/MultiDropdown"],
 [data-component="splunk-core:/splunkjs/mvc/components/Dropdown"] [data-test="select"] > button,
 [data-component="splunk-core:/splunkjs/mvc/components/Dropdown"] button,
@@ -1182,7 +1207,9 @@ footer {
 [data-view="splunkjs/mvc/textinputview"] input:focus,
 [data-component="splunk-core:/splunkjs/mvc/components/MultiDropdown"][data-hasfocus],
 [data-component="splunk-core:/splunkjs/mvc/components/Dropdown"] [data-test="select"] > button:focus,
-[data-component="splunk-core:/splunkjs/mvc/components/TimeRangePickerDropdown"] > button:focus {
+[data-component="splunk-core:/splunkjs/mvc/components/Dropdown"] [data-test="select"] > button:focus-within,
+[data-component="splunk-core:/splunkjs/mvc/components/TimeRangePickerDropdown"] > button:focus,
+[data-component="splunk-core:/splunkjs/mvc/components/TimeRangePickerDropdown"] > button:focus-within {
 	border-color: var(--color-bluegray-700) !important;
 	box-shadow: none !important;
 }
@@ -1211,6 +1238,7 @@ footer {
 
 [data-test="popover"] [data-test="menu"] button:hover,
 [data-test="popover"] [data-test="menu"] button:focus,
+[data-test="popover"] [data-test="menu"] button:focus-within,
 [data-test="popover"] [data-test="menu"] button[data-active]  {
 	background: var(--color-bluegray-800) !important;
 	box-shadow: none !important;
