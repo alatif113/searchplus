@@ -1,9 +1,10 @@
 define([
 	'underscore', 
 	'jquery', 
+	'splunkjs/mvc',
 	'splunkjs/mvc/simplesplunkview', 
     '/static/app/searchplus/js/simplebar.min.js'], 
-	function (_, $, SimpleSplunkView, format) {
+	function (_, $, mvc, SimpleSplunkView, format) {
 
 	// Define the custom view class
 	var SPChangeView = SimpleSplunkView.extend({
@@ -31,17 +32,24 @@ define([
 
 		// Override this method to put the Splunk data into the view
 		updateView: function (viz, data) {
+			let defaultTokenModel = mvc.Components.get("default");
 			viz.$el.html('');
 			data.forEach(function (row) {
-                console.log(row)
                 let $markup = $(`
                     <li>
                         <div class="search-title">${row.title}</div>
                         <div class="change-time">${row._time}</div>
-                        <div class="change-time">${row.change}</div>
-                        <div class="change-time">${row.change_id}</div>
                     </li>
                 `);
+
+				$markup.on('click', function() {
+					defaultTokenModel.set('title', row.title);
+					defaultTokenModel.set('earliest', row.earliest);
+					defaultTokenModel.set('latest', row.latest);
+
+					$('li.selected', viz.$el).removeClass('selected');
+					$(this).addClass('selected');
+				})
 
                 viz.$el.append($markup);
 			});

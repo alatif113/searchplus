@@ -46,6 +46,7 @@ define([
                 let SAVED_SEARCH_EDIT_URL = `/manager/searchplus/saved/searches?app=${row.app}&count=10&offset=0&itemType=&owner=${row.owner}&search=%22${encodeURIComponent(row.title)}%22`;
                 let CORRELATION_SEARCH_EDIT_URL = `/app/SplunkEnterpriseSecuritySuite/correlation_search_edit?search=${encodeURIComponent(row.title)}`;
 		        let EDIT_URL = row.correlation_search == 'yes' ? CORRELATION_SEARCH_EDIT_URL : SAVED_SEARCH_EDIT_URL;
+                let CHANGE_URL = `/app/searchplus/search_change_history?keyword=${encodeURIComponent(row.title)}`;
 				
                 let $markup = $(`
                     <li>
@@ -66,7 +67,10 @@ define([
                                     <a href="#" aria-controls="attributes" role="tab">Attributes</a>
                                     <a href="#" aria-controls="statistics" role="tab">Statistics</a>
                                 </nav>
-                                <a target="_blank" href="${EDIT_URL}" class="btn-edit-search btn-light"><i class="icon icon-external"></i>Edit Search</a>
+                                <div>
+                                    <a target="_blank" href="${EDIT_URL}" class="btn-edit-search btn-light"><i class="icon icon-external"></i>Edit Search</a>
+                                    <a target="_blank" href="${CHANGE_URL}" class="btn-change-history btn-light"><i class="icon icon-external"></i>Change History</a>
+                                </div>
                             </div>
                             <div class="search-details-content">
                                 <section id="general" role="tabpanel" class="selected">
