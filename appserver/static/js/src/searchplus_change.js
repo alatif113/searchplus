@@ -106,7 +106,7 @@ require([
 			{label: "Last 6 Months", value: "-6mon"},
 			{label: "Last 1 Year", value: "-1y"},
 		],
-        default: "-50y",
+        default: "-7d",
 		value: "$updated$",
         el: $('.input-updated')
     }, {tokens: true}).render();
