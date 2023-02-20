@@ -133,7 +133,7 @@ require([
                             <div class="splunk-input-container input-tactic"></div>
                         </div>
                         <div class="input-container">
-                            <label><i class="icon icon-technique"></i>MITRE AYY&CK Techniques</label>
+                            <label><i class="icon icon-technique"></i>MITRE ATT&CK Techniques</label>
                             <div class="splunk-input-container input-technique"></div>
                         </div>
                     </section>

@@ -55,11 +55,11 @@ define([
 					},
 					earliest: {
 						label: 'Earliest',
-						icon: 'icon-timer'
+						icon: 'icon-timespan'
 					},
 					latest: {
 						label: 'Latest',
-						icon: 'icon-timer'
+						icon: 'icon-timespan'
 					},
 					mtr_tactic: {
 						label: 'MITRE Tactic',
@@ -106,13 +106,6 @@ define([
 						icon: 'icon-clock'
 					}
 				}
-
-				viz.$el.append($(`
-					<li class="change-list-item">
-						<div>${row.title}</div>
-					</li>
-				`));
-
 
 				Object.keys(fields).forEach(field => {
 					let curr_field = row[field] || '';

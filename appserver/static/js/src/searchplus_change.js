@@ -38,10 +38,18 @@ require([
 				</div>
             </section>
             <section class="content change-details-content">
+				<div class="change-content-title">
+					<div class="search-name">...</div>
+					<div class="diff-toggle">
+						<span>Diff Highlighting</span>
+						<input class="tgl tgl-flat" id="toggle-input" type="checkbox" checked/>
+						<label class="tgl-btn" for="toggle-input"></label>
+					</div>
+				</div>
 				<header class="change-content-header">
 					<div>Field</div>
 					<div>Current Value</div>
-					<div>Change From Previous Value</div>
+					<div>Previous Value</div>
 				</header>
 				<div class="scroll-container" data-simplebar>
 					<ol class="search-results">
@@ -125,6 +133,28 @@ require([
 		let results = this.data('results');
 		let result_count = results.attributes.manager.attributes.data.resultCount;
 		$('.result-count', $dashboard).html(result_count.toLocaleString());
+
+		results.on("data", function() {
+			let rows = results.data().rows;
+			if (rows.length > 0) {
+				defaultTokenModel.set('title', rows[0][0]);
+				defaultTokenModel.set('earliest', rows[0][2]);
+				defaultTokenModel.set('latest', rows[0][3]);
+				$('.search-name', $dashboard).text(rows[0][0]);
+			}
+		});
+	});
+
+	defaultTokenModel.on("change:title", function(formQuery, title) {
+        $('.search-name', $dashboard).text(title);
+    });
+
+	$("#toggle-input", $dashboard).change(function() {
+		if(this.checked) {
+			$('.search-results', $dashboard).removeClass('diff-disabled');
+		} else {
+			$('.search-results', $dashboard).addClass('diff-disabled');
+		}
 	});
 
 });

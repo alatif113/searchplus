@@ -53,6 +53,8 @@ define([
 
                 viz.$el.append($markup);
 			});
+
+			$('li', viz.$el).first().addClass('selected');
 		},
 	});
 
